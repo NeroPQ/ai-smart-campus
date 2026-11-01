@@ -1,0 +1,8 @@
+{
+  "name": "ai-smart-campus",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Student tools for responsible AI use and Vietnamese AI-literacy practice.",
+  "engines": { "node": ">=20" },
+  "scripts": { "test": "node tests/run-all.cjs" }
+}

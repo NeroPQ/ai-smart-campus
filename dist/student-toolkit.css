@@ -1,0 +1,69 @@
+/* Student Toolkit: scoped cards, readable controls and responsive layouts. */
+.stk-toolkit { display: grid; gap: 22px; min-width: 0; margin-block: 44px 52px; padding-top: 28px; border-top: 1px solid #dce4d7; color: var(--ink, #16363a); }
+.stk-toolkit-heading { display: grid; gap: 10px; }
+.stk-toolkit-kicker { color: #526e55; font-size: 11px; font-weight: 800; letter-spacing: .09em; }
+.stk-toolkit-title { margin: 0; color: #183a36; font-size: clamp(28px, 3vw, 38px); font-weight: 750; letter-spacing: -.045em; line-height: 1.16; }
+.stk-toolkit-intro { max-width: 790px; margin: 0; color: #4b625a; font-size: 15px; line-height: 1.7; }
+.stk-toolkit-disclosure-layout { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); align-items: start; gap: 22px; min-width: 0; }
+.stk-toolkit-form { display: grid; gap: 18px; min-width: 0; }
+.stk-toolkit-choice-group, .stk-toolkit-prompt-card { min-width: 0; margin: 0; padding: 22px; border: 1px solid #d8e2d5; border-radius: 16px; background: #fffefa; box-shadow: 0 5px 18px rgba(22,54,58,.035); }
+.stk-toolkit-legend { display: flex; align-items: center; gap: 10px; max-width: 100%; padding-inline: 4px; color: #1c3c3e; font-size: 16px; font-weight: 760; line-height: 1.4; }
+.stk-toolkit-step { display: inline-grid; flex: 0 0 30px; height: 30px; place-items: center; border-radius: 50%; background: #e5efd9; color: #37533c; font-size: 11px; font-weight: 850; }
+.stk-toolkit-hint, .stk-toolkit-purpose { margin: 6px 0 14px; color: #52665d; font-size: 14px; line-height: 1.6; }
+.stk-toolkit-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.stk-toolkit-option { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid #d9e2d8; border-radius: 10px; background: #fff; color: #344f46; cursor: pointer; font-size: 14px; line-height: 1.5; transition: background .15s, border-color .15s; }
+.stk-toolkit-option:hover { border-color: #8ca380; background: #f6f9f2; }
+.stk-toolkit-option.is-selected { border-color: #5d7f4c; background: #e8f1dc; color: #243e33; box-shadow: inset 0 0 0 1px #5d7f4c; }
+.stk-toolkit-option input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: #557943; }
+.stk-toolkit-option span { min-width: 0; overflow-wrap: anywhere; }
+.stk-toolkit-field { display: grid; gap: 8px; min-width: 0; color: #405b50; font-size: 14px; font-weight: 700; }
+.stk-toolkit-text-input { width: 100%; min-width: 0; min-height: 46px; padding: 11px 13px; border: 1px solid #ccd8c8; border-radius: 10px; background: #fffefa; color: #243e33; font: inherit; font-size: 15px; font-weight: 400; }
+.stk-toolkit-preview { position: sticky; top: 95px; display: grid; gap: 16px; min-width: 0; padding: 24px; border: 1px solid #cdddc3; border-radius: 18px; background: #f0f5e8; box-shadow: 0 10px 28px rgba(22,54,58,.06); }
+.stk-toolkit-preview-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.stk-toolkit-preview-title { margin: 0; color: #1c3c3e; font-size: 18px; font-weight: 750; }
+.stk-toolkit-language { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #c8d7c0; border-radius: 999px; background: #fffefa; }
+.stk-toolkit-language-button { min-height: 38px; padding: 7px 12px; border: 0; border-radius: 999px; background: transparent; color: #40584c; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+.stk-toolkit-language-button[aria-pressed="true"] { background: #16363a; color: #fff; }
+.stk-toolkit-output, .stk-toolkit-prompt-text { min-width: 0; margin: 0; padding: 17px; border: 1px solid #d6e0d2; border-radius: 11px; background: #fff; color: #2c453b; font: inherit; font-size: 15px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.stk-toolkit-output { min-height: 180px; }
+.stk-toolkit-caveat { margin: 0; padding: 13px 15px; border-left: 3px solid #bb8d3e; border-radius: 0 9px 9px 0; background: #fff7e8; color: #604719; font-size: 13px; line-height: 1.65; }
+.stk-toolkit-reference { margin: 0; color: #53685b; font-size: 13px; line-height: 1.6; }
+.stk-toolkit-source-link { margin-left: 5px; color: #315e42; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.stk-toolkit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.stk-toolkit-button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 11px 16px; border: 1px solid #b8c8b0; border-radius: 10px; background: #fffefa; color: #254335; cursor: pointer; font: inherit; font-size: 14px; font-weight: 750; }
+.stk-toolkit-button:hover:not(:disabled) { background: #e7efde; }
+.stk-toolkit-button-primary { border-color: #16363a; background: #16363a; color: #fff; }
+.stk-toolkit-button-primary:hover:not(:disabled) { background: #285356; }
+.stk-toolkit-button:disabled { cursor: not-allowed; opacity: .45; }
+.stk-toolkit-status { flex-basis: 100%; min-width: 0; color: #405b4d; font-size: 13px; line-height: 1.6; }
+.stk-toolkit-prompt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.stk-toolkit-prompt-card { display: flex; flex-direction: column; gap: 14px; }
+.stk-toolkit-card-title { margin: 0; color: #1a3b34; font-size: 18px; font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }
+.stk-toolkit-prompt-card .stk-toolkit-purpose { flex: 1; margin: 0; }
+.stk-toolkit-prompt-details { min-width: 0; padding: 12px 14px; border: 1px solid #e0e6d9; border-radius: 10px; background: #f6f9f2; }
+.stk-toolkit-prompt-details summary { color: #36583e; cursor: pointer; font-size: 14px; font-weight: 750; }
+.stk-toolkit-prompt-text { margin-top: 12px; padding: 13px; font-size: 14px; line-height: 1.7; }
+.stk-toolkit-accordion { min-width: 0; margin: 0; border: 1px solid #d9e2d4; border-radius: 15px; background: #fffefa; }
+.stk-toolkit-accordion summary { padding: 20px 22px; color: #1a3b34; cursor: pointer; font-size: 16px; font-weight: 750; line-height: 1.5; }
+.stk-toolkit-accordion[open] > summary { border-bottom: 1px solid #e2e8dc; }
+.stk-toolkit-guide-body { display: grid; gap: 14px; padding: 20px 22px 24px; color: #405b4c; font-size: 15px; line-height: 1.7; }
+.stk-toolkit-guide-body p { margin: 0; }
+.stk-toolkit-guide-body ol, .stk-toolkit-guide-body ul { display: grid; gap: 12px; margin: 0; padding-left: 23px; }
+.stk-toolkit-message-label { margin: 0; color: #405d47; font-size: 13px; font-weight: 750; }
+.stk-toolkit-message { margin: 0; padding: 15px 17px; border-left: 3px solid #6b8a57; border-radius: 0 9px 9px 0; background: #f1f6e9; color: #344f3d; font-size: 15px; line-height: 1.7; overflow-wrap: anywhere; }
+.stk-toolkit-copy-buffer { position: fixed; top: 0; left: -10000px; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 840px) {
+  .stk-toolkit-disclosure-layout { grid-template-columns: minmax(0, 1fr); }
+  .stk-toolkit-preview { position: static; }
+}
+@media (max-width: 700px) {
+  .stk-toolkit { gap: 18px; margin-block: 30px 38px; padding-top: 22px; }
+  .stk-toolkit-title { font-size: 28px; }
+  .stk-toolkit-options, .stk-toolkit-prompt-grid { grid-template-columns: minmax(0, 1fr); }
+  .stk-toolkit-choice-group, .stk-toolkit-prompt-card { padding: 17px; }
+  .stk-toolkit-preview { padding: 18px; }
+  .stk-toolkit-text-input { font-size: 16px; }
+  .stk-toolkit-language-button { min-height: 42px; padding-inline: 14px; }
+  .stk-toolkit-accordion summary { padding: 17px; font-size: 15px; }
+  .stk-toolkit-guide-body { padding: 17px; }
+}
