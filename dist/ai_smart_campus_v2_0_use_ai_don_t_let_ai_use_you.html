@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="neural-glass">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Smart Campus v2.0 — Use AI, Don't Let AI Use You</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root,
+    [data-theme="neural-glass"] {
+      --bg-primary: #070b14;
+      --bg-secondary: #0f1626;
+      --bg-card: rgba(17, 25, 42, 0.78);
+      --bg-card-hover: rgba(24, 35, 58, 0.9);
+      --bg-input: rgba(11, 17, 30, 0.9);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --border-highlight: rgba(99, 102, 241, 0.48);
+      --accent-primary: #6366f1;
+      --accent-secondary: #06b6d4;
+      --accent-tertiary: #10b981;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --radius-card: 16px;
+      --radius-btn: 10px;
+      --shadow-card: 0 12px 32px -8px rgba(2, 6, 23, 0.65);
+      --bg-mesh: radial-gradient(circle at 12% 12%, rgba(99, 102, 241, 0.16), transparent 36%),
+                 radial-gradient(circle at 88% 18%, rgba(6, 182, 212, 0.14), transparent 38%),
+                 radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.10), transparent 42%);
+      --grid-pattern: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      --grid-size: 24px 24px;
+    }
+
+    [data-theme="verify-hud"] {
+      --bg-primary: #060d13;
+      --bg-secondary: #0b1620;
+      --bg-card: rgba(11, 23, 34, 0.9);
+      --bg-card-hover: rgba(16, 33, 48, 0.96);
+      --bg-input: #07111a;
+      --text-primary: #e2f1ff;
+      --text-secondary: #8ab0ce;
+      --text-muted: #587b98;
+      --border-subtle: rgba(56, 189, 248, 0.22);
+      --border-highlight: rgba(34, 211, 238, 0.65);
+      --accent-primary: #0ea5e9;
+      --accent-secondary: #10b981;
+      --accent-tertiary: #f59e0b;
+      --accent-glow: rgba(14, 165, 233, 0.28);
+      --radius-card: 6px;
+      --radius-btn: 4px;
+      --shadow-card: 0 0 0 1px rgba(14, 165, 233, 0.15), 0 10px 28px rgba(0, 0, 0, 0.75);
+      --bg-mesh: radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.14), transparent 35%),
+                 radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.12), transparent 35%);
+      --grid-pattern: linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+      --grid-size: 32px 32px;
+    }
+
+    [data-theme="quantum-neon"] {
+      --bg-primary: #090614;
+      --bg-secondary: #130d26;
+      --bg-card: rgba(22, 15, 44, 0.8);
+      --bg-card-hover: rgba(32, 22, 62, 0.92);
+      --bg-input: rgba(14, 9, 30, 0.92);
+      --text-primary: #faf5ff;
+      --text-secondary: #c4b5fd;
+      --text-muted: #8b5cf6;
+      --border-subtle: rgba(168, 85, 247, 0.24);
+      --border-highlight: rgba(236, 72, 153, 0.6);
+      --accent-primary: #a855f7;
+      --accent-secondary: #ec4899;
+      --accent-tertiary: #3b82f6;
+      --accent-glow: rgba(168, 85, 247, 0.32);
+      --radius-card: 20px;
+      --radius-btn: 9999px;
+      --shadow-card: 0 14px 36px -6px rgba(88, 28, 135, 0.45);
+      --bg-mesh: radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.2), transparent 40%),
+                 radial-gradient(circle at 80% 25%, rgba(236, 72, 153, 0.16), transparent 40%),
+                 radial-gradient(circle at 50% 85%, rgba(59, 130, 246, 0.15), transparent 45%);
+      --grid-pattern: radial-gradient(rgba(216, 180, 254, 0.14) 1px, transparent 1px);
+      --grid-size: 28px 28px;
+    }
+
+    [data-theme="academic-light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #eef2ff;
+      --bg-card: rgba(255, 255, 255, 0.95);
+      --bg-card-hover: #ffffff;
+      --bg-input: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --border-subtle: rgba(15, 23, 42, 0.11);
+      --border-highlight: rgba(79, 70, 229, 0.45);
+      --accent-primary: #4f46e5;
+      --accent-secondary: #0d9488;
+      --accent-tertiary: #0284c7;
+      --accent-glow: rgba(79, 70, 229, 0.14);
+      --radius-card: 14px;
+      --radius-btn: 10px;
+      --shadow-card: 0 8px 24px -6px rgba(15, 23, 42, 0.07), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+      --bg-mesh: radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.07), transparent 35%),
+                 radial-gradient(circle at 90% 15%, rgba(13, 148, 136, 0.08), transparent 35%);
+      --grid-pattern: radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+      --grid-size: 24px 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      background-image: var(--bg-mesh);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      line-height: 1.65;
+      transition: background-color 0.28s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+
+    .bg-grid-overlay {
+      background-image: var(--grid-pattern);
+      background-size: var(--grid-size);
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .surface-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .surface-card:hover {
+      border-color: var(--border-highlight);
+    }
+
+    .surface-interactive:hover {
+      transform: translateY(-2px);
+      background: var(--bg-card-hover);
+      box-shadow: 0 16px 36px -8px var(--accent-glow);
+    }
+
+    .input-field {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-btn);
+      color: var(--text-primary);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #ffffff;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-btn);
+      font-weight: 500;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-primary);
+      background: var(--bg-card-hover);
+    }
+
+    .nav-tab {
+      border-radius: var(--radius-btn);
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    .nav-tab.active {
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+      border-color: var(--border-highlight);
+      box-shadow: 0 0 18px var(--accent-glow);
+      font-weight: 600;
+    }
+
+    /* Traffic Light Policy Badges */
+    .policy-green {
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    [data-theme="academic-light"] .policy-green {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #6ee7b7;
+    }
+
+    .policy-yellow {
+      background: rgba(245, 158, 11, 0.14);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    [data-theme="academic-light"] .policy-yellow {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fcd34d;
+    }
+
+    .policy-red {
+      background: rgba(239, 68, 68, 0.14);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    [data-theme="academic-light"] .policy-red {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fca5a5;
+    }
+
+    /* Highlighted spans inside Vietnamese Text Analyzer */
+    .hl-cliche {
+      background: rgba(245, 158, 11, 0.22);
+      border-bottom: 2px solid #f59e0b;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .hl-uncited {
+      background: rgba(239, 68, 68, 0.22);
+      border-bottom: 2px dashed #ef4444;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .hl-long {
+      background: rgba(99, 102, 241, 0.18);
+      border-bottom: 2px dotted #6366f1;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    .hl-good {
+      background: rgba(16, 185, 129, 0.18);
+      border-bottom: 2px solid #10b981;
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.65; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+    .ai-orb {
+      animation: pulseGlow 3.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-grid-overlay min-h-screen flex flex-col">
+
+  <!-- TOP TELEMETRY & AI THEME SWITCHER BAR -->
+  <header class="sticky top-0 z-40 border-b backdrop-blur-xl" style="background: var(--bg-card); border-color: var(--border-subtle);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-mono-tech font-bold text-white shadow-lg ai-orb"
+             style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">
+          AI
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-extrabold text-base sm:text-lg tracking-tight">AI Smart Campus</span>
+            <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded-full font-medium"
+                  style="background: var(--bg-secondary); color: var(--accent-secondary); border: 1px solid var(--border-subtle);">
+              v2.0 UI/UX
+            </span>
+          </div>
+          <p class="text-xs hidden sm:block" style="color: var(--text-secondary);">
+            Use AI, Don't Let AI Use You · Công cụ Liêm chính Học thuật & Phân tích Tiếng Việt
+          </p>
+        </div>
+      </div>
+
+      <!-- Live AI Tech Theme Switcher -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="font-mono-tech text-xs hidden md:inline" style="color: var(--text-secondary);">AI THEME:</span>
+        <div class="flex items-center gap-1 p-1 rounded-xl" style="background: var(--bg-secondary); border: 1px solid var(--border-subtle);">
+          <button type="button" data-theme-btn="neural-glass"
+                  class="theme-switch-btn px-2.5 py-1 text-xs font-medium rounded-lg transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+            <span>Neural Glass</span>
+          </button>
+          <button type="button" data-theme-btn="verify-hud"
+                  class="theme-switch-btn px-2.5 py-1 text-xs font-medium rounded-lg transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+            <span>VeRA HUD</span>
+          </button>
+          <button type="button" data-theme-btn="quantum-neon"
+                  class="theme-switch-btn px-2.5 py-1 text-xs font-medium rounded-lg transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
+            <span>Quantum Holo</span>
+          </button>
+          <button type="button" data-theme-btn="academic-light"
+                  class="theme-switch-btn px-2.5 py-1 text-xs font-medium rounded-lg transition flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span>Daylight</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIMARY NAVIGATION BAR (6 CORE TOOLS + HUB) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-2.5 overflow-x-auto">
+      <nav class="flex items-center gap-1.5 min-w-max" aria-label="Công cụ chính">
+        <button type="button" data-nav="overview" class="nav-tab active px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>⚡</span><span>Trung tâm & Theme</span>
+        </button>
+        <button type="button" data-nav="disclosure" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>🛡️</span><span>1. Tạo Khai Báo AI</span>
+        </button>
+        <button type="button" data-nav="process-log" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>📓</span><span>2. Nhật Ký & Phụ Lục</span>
+          <span id="nav-log-badge" class="font-mono-tech text-[11px] px-1.5 py-0.2 rounded-full" style="background: var(--accent-primary); color: #fff;">3</span>
+        </button>
+        <button type="button" data-nav="vn-analyzer" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>🔍</span><span>3. Soi Bài Trước Giờ G</span>
+        </button>
+        <button type="button" data-nav="model-signal" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>📡</span><span>4. Tín Hiệu Mô Hình (Lab)</span>
+        </button>
+        <button type="button" data-nav="prompt-vault" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>🧠</span><span>5. Tủ Prompt Tự Học</span>
+        </button>
+        <button type="button" data-nav="checker-persona" class="nav-tab px-3 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+          <span>🎯</span><span>6. Checker 10 Tình Huống</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- =====================================================================
+         VIEW 0: OVERVIEW / BENTO HUB & UI/UX THEME SHOWCASE
+         ===================================================================== -->
+    <section id="view-overview" class="app-view space-y-6">
+      <!-- Hero Banner -->
+      <div class="surface-card p-6 sm:p-8 relative overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-8 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono-tech"
+                 style="background: var(--bg-secondary); color: var(--accent-secondary); border: 1px solid var(--border-subtle);">
+              <span>● RESPONSIBLE AI COPILOT WORKSPACE</span>
+              <span>·</span>
+              <span id="active-theme-indicator">THEME: NEURAL GLASS STUDIO</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight">
+              Sử dụng AI như trợ lý tư duy — <span style="color: var(--accent-secondary);">Đừng để AI nghĩ thay bạn.</span>
+            </h1>
+            <p class="text-sm sm:text-base max-w-2xl" style="color: var(--text-secondary);">
+              Bộ công cụ học thuật dành cho sinh viên đại học: tự động tạo bản khai báo AI minh bạch, lưu nhật ký quá trình làm bài (Process Log), rà soát văn bản tiếng Việt cục bộ trước giờ nộp bài và rèn kỹ năng kiểm chứng nguồn.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <button type="button" data-goto="vn-analyzer" class="btn-primary px-4 py-2.5 text-sm flex items-center gap-2">
+                <span>🔍 Soi Bài Tiếng Việt Ngay</span>
+              </button>
+              <button type="button" data-goto="disclosure" class="btn-secondary px-4 py-2.5 text-sm flex items-center gap-2">
+                <span>🛡️ Tạo Khai Báo AI (30 giây)</span>
+              </button>
+              <button type="button" data-goto="process-log" class="btn-secondary px-4 py-2.5 text-sm flex items-center gap-2">
+                <span>📓 Mở Nhật Ký & Xuất Phụ Lục</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Telemetry Summary Card -->
+          <div class="lg:col-span-4 surface-card p-5 space-y-3" style="background: var(--bg-secondary);">
+            <div class="flex items-center justify-between border-b pb-2.5" style="border-color: var(--border-subtle);">
+              <span class="font-mono-tech text-xs font-semibold" style="color: var(--accent-secondary);">AI INTEGRITY TELEMETRY</span>
+              <span class="font-mono-tech text-xs px-2 py-0.5 rounded policy-green">LOCAL FIRST · 100% PRIVATE</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-center">
+              <div class="p-3 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+                <div id="stat-logs-count" class="font-display text-2xl font-extrabold">3</div>
+                <div class="text-xs" style="color: var(--text-secondary);">Mục Nhật ký AI</div>
+              </div>
+              <div class="p-3 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-subtle);">
+                <div id="stat-quiz-score" class="font-display text-2xl font-extrabold">0/10</div>
+                <div class="text-xs" style="color: var(--text-secondary);">Tình huống đã giải</div>
+              </div>
+            </div>
+            <p class="text-xs leading-relaxed" style="color: var(--text-secondary);">
+              💡 <strong>Nâng cấp UX v2.0:</strong> Mọi dữ liệu phân tích bài viết và nhật ký đều xử lý trực tiếp trên trình duyệt của bạn, không gửi bài tập lên máy chủ bên ngoài.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Green - Yellow - Red Traffic Light Policy Strip -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="surface-card p-5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono-tech text-xs font-bold px-2.5 py-1 rounded-full policy-green">🟢 GREEN · ĐƯỢC KHUYẾN KHÍCH</span>
+            <span class="font-mono-tech text-xs" style="color: var(--text-muted);">Tự học & Gợi ý</span>
+          </div>
+          <h3 class="font-bold text-base">Học khái niệm, Brainstorm & Giải thích</h3>
+          <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+            Nhờ AI giải thích thuật ngữ khó, tóm tắt slide bài giảng, đặt câu hỏi gợi mở (như gia sư Khanmigo) hoặc tạo đề cương ôn tập khi bạn vẫn tự mình viết bài.
+          </p>
+        </div>
+
+        <div class="surface-card p-5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono-tech text-xs font-bold px-2.5 py-1 rounded-full policy-yellow">🟡 YELLOW · CẦN KHAI BÁO RÕ</span>
+            <span class="font-mono-tech text-xs" style="color: var(--text-muted);">Có điều kiện</span>
+          </div>
+          <h3 class="font-bold text-base">Lập dàn ý, Góp ý bản nháp & Gỡ lỗi Code</h3>
+          <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+            Dùng AI nhận xét văn phong, gợi ý cấu trúc hoặc tìm bug nhưng sinh viên tự kiểm chứng lại toàn bộ nguồn và đính kèm <strong>Bản khai báo AI + Nhật ký quá trình</strong>.
+          </p>
+        </div>
+
+        <div class="surface-card p-5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono-tech text-xs font-bold px-2.5 py-1 rounded-full policy-red">🔴 RED · VI PHẠM LIÊM CHÍNH</span>
+            <span class="font-mono-tech text-xs" style="color: var(--text-muted);">Cấm tuyệt đối</span>
+          </div>
+          <h3 class="font-bold text-base">Nộp nguyên bài AI viết & Nguồn bịa đặt</h3>
+          <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+            Yêu cầu AI viết trọn bài tập rồi nộp như bài làm cá nhân, hoặc chép nguyên các trích dẫn học thuật do AI tự sinh ra (hallucinated citations) mà không đọc bản gốc.
+          </p>
+        </div>
+      </div>
+
+      <!-- 6 Tool Cards Bento Grid -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg sm:text-xl font-bold">Hệ sinh thái 6 Công cụ AI Smart Campus (Bento Grid)</h2>
+          <span class="text-xs font-mono-tech" style="color: var(--text-secondary);">Bấm vào bất kỳ thẻ nào để mở công cụ</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div data-goto="disclosure" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🛡️</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-green">TOOL 01 · DISCLOSURE</span>
+              </div>
+              <h3 class="font-bold text-base">Tạo Khai Báo AI (AI Disclosure Builder)</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Tạo nhanh đoạn văn khai báo minh bạch việc sử dụng AI bằng tiếng Việt & tiếng Anh theo chuẩn học thuật chỉ với vài cú click.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Mở trình tạo khai báo</span><span>→</span>
+            </div>
+          </div>
+
+          <div data-goto="process-log" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">📓</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-yellow">TOOL 02 · PROCESS LOG</span>
+              </div>
+              <h3 class="font-bold text-base">Nhật Ký Minh Bạch & Xuất Phụ Lục</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Ghi lại chuỗi thao tác (Prompt đã dùng → Kết quả AI → Bước tự kiểm chứng & viết lại) và xuất file phụ lục Markdown/JSON đính kèm bài nộp.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Quản lý nhật ký & xuất file</span><span>→</span>
+            </div>
+          </div>
+
+          <div data-goto="vn-analyzer" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🔍</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-green">TOOL 03 · LOCAL VN NLP</span>
+              </div>
+              <h3 class="font-bold text-base">Soi Bài Trước Giờ G (Quét Quy Tắc)</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Phân tích văn bản tiếng Việt cục bộ: tô sáng cụm từ sáo rỗng kiểu dịch máy, câu quá dài và các nhận định/số liệu đang thiếu nguồn trích dẫn.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Quét bài viết ngay</span><span>→</span>
+            </div>
+          </div>
+
+          <div data-goto="model-signal" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">📡</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-yellow">TOOL 04 · SIGNAL LAB</span>
+              </div>
+              <h3 class="font-bold text-base">Nhận Diện Bằng Mô Hình (Thử Nghiệm)</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Trực quan hóa các chỉ số thống kê văn phong (Burstiness, độ đa dạng từ vựng, mật độ từ nối) kèm giải thích rõ giới hạn của công cụ AI Detector.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Xem biểu đồ tín hiệu</span><span>→</span>
+            </div>
+          </div>
+
+          <div data-goto="prompt-vault" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🧠</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-green">TOOL 05 · PROMPT VAULT</span>
+              </div>
+              <h3 class="font-bold text-base">Tủ Prompt Tự Học & Prompt Challenge</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Kho prompt mẫu giúp sinh viên tự học (tóm tắt slide, hướng dẫn làm lab có nhắc chỗ chụp màn hình, phản biện bài viết) kèm bài tập nâng cấp prompt.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Khám phá tủ prompt</span><span>→</span>
+            </div>
+          </div>
+
+          <div data-goto="checker-persona" class="surface-card surface-interactive p-5 cursor-pointer flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🎯</span>
+                <span class="font-mono-tech text-[11px] px-2 py-0.5 rounded policy-red">TOOL 06 · 10 SCENARIOS</span>
+              </div>
+              <h3 class="font-bold text-base">Checker & Persona (10 Tình Huống)</h3>
+              <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+                Thử sức phân loại 10 tình huống thực tế theo thang Green / Yellow / Red và khám phá hồ sơ thói quen dùng AI (AI Learning Persona) của bạn.
+              </p>
+            </div>
+            <div class="text-xs font-semibold flex items-center gap-1" style="color: var(--accent-secondary);">
+              <span>Làm thử thách 10 tình huống</span><span>→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 AI Tech Themes Architecture Showcase -->
+      <div class="surface-card p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-bold">🎨 Bảng điều khiển 4 Theme Công nghệ AI (Click để đổi giao diện tức thì)</h2>
+            <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+              Được thiết kế bằng hệ thống Design Tokens (`:root` + `[data-theme="..."]`) giúp bạn tích hợp thẳng vào repo `NeroPQ/ai-smart-campus`.
+            </p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <button type="button" data-theme-card="neural-glass" class="surface-card p-4 text-left space-y-2 cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-tech text-xs font-bold text-indigo-400">01 // NEURAL GLASS</span>
+              <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+            </div>
+            <div class="font-bold text-sm">Linear & OpenAI Studio</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Nền Obsidian `#070B14`, lưới hạt Neural, hiệu ứng kính mờ Glassmorphism và dải sáng Indigo–Cyan.</p>
+          </button>
+
+          <button type="button" data-theme-card="verify-hud" class="surface-card p-4 text-left space-y-2 cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-tech text-xs font-bold text-sky-400">02 // VERA HUD LAB</span>
+              <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+            </div>
+            <div class="font-bold text-sm">Forensic Verification Lab</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Lấy cảm hứng từ VeRA & SOC Telemetry: khung sắc nét `6px`, lưới tọa độ kỹ thuật và nhãn bằng chứng rõ ràng.</p>
+          </button>
+
+          <button type="button" data-theme-card="quantum-neon" class="surface-card p-4 text-left space-y-2 cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-tech text-xs font-bold text-fuchsia-400">03 // QUANTUM HOLO</span>
+              <span class="w-3 h-3 rounded-full bg-fuchsia-500"></span>
+            </div>
+            <div class="font-bold text-sm">Futuristic AI Campus</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Tông tím Vũ trụ `#090614` kết hợp dải màu Holographic Violet–Pink–Blue trẻ trung cho Workshop sinh viên.</p>
+          </button>
+
+          <button type="button" data-theme-card="academic-light" class="surface-card p-4 text-left space-y-2 cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-tech text-xs font-bold text-emerald-500">04 // DAYLIGHT COPILOT</span>
+              <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            </div>
+            <div class="font-bold text-sm">Claude / Notion Daylight</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Nền sáng `#F8FAFC` độ tương phản cao, chống mỏi mắt khi đọc văn bản dài trên điện thoại ở giảng đường.</p>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 1: TẠO KHAI BÁO AI (AI DISCLOSURE BUILDER)
+         ===================================================================== -->
+    <section id="view-disclosure" class="app-view hidden space-y-6">
+      <div class="surface-card p-6 space-y-2">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-green">TOOL 01 // AI DISCLOSURE GENERATOR</span>
+          <span class="text-xs font-mono-tech" style="color: var(--text-secondary);">Chuẩn hóa theo Green–Yellow–Red Policy</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold">🛡️ Trình Tạo Bản Khai Báo Sử Dụng AI (AI Use Declaration)</h2>
+        <p class="text-sm" style="color: var(--text-secondary);">
+          Giúp bạn công khai minh bạch công cụ AI đã dùng, mục đích hỗ trợ và cách bạn tự kiểm chứng thông tin trước khi nộp bài tập, báo cáo hoặc đồ án.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Form Controls -->
+        <div class="lg:col-span-6 surface-card p-6 space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="disc-course" class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--text-secondary);">Môn học / Học phần</label>
+              <input id="disc-course" type="text" value="SSA101 — Kỹ năng Học tập Đại học" class="input-field w-full px-3.5 py-2 text-sm" />
+            </div>
+            <div>
+              <label for="disc-assignment" class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--text-secondary);">Tên bài tập / Báo cáo</label>
+              <input id="disc-assignment" type="text" value="Báo cáo Dự án AI Smart Campus" class="input-field w-full px-3.5 py-2 text-sm" />
+            </div>
+          </div>
+
+          <!-- AI Tools Checkboxes -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-secondary);">Công cụ AI đã sử dụng</label>
+            <div class="flex flex-wrap gap-2" id="disc-tools-group">
+              <label class="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="ChatGPT (OpenAI)" checked class="disc-tool-cb accent-indigo-500" />
+                <span>ChatGPT</span>
+              </label>
+              <label class="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="Google Gemini" checked class="disc-tool-cb accent-indigo-500" />
+                <span>Google Gemini</span>
+              </label>
+              <label class="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="Claude (Anthropic)" class="disc-tool-cb accent-indigo-500" />
+                <span>Claude</span>
+              </label>
+              <label class="cursor-pointer px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="GitHub Copilot" class="disc-tool-cb accent-indigo-500" />
+                <span>GitHub Copilot</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Policy Level Selection -->
+          <div>
+            <label for="disc-level" class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--text-secondary);">Mức độ hỗ trợ theo Chính sách Học thuật</label>
+            <select id="disc-level" class="input-field w-full px-3.5 py-2 text-sm">
+              <option value="green">🟢 Mức GREEN — Chỉ tìm ý tưởng, giải thích khái niệm & tóm tắt tài liệu</option>
+              <option value="yellow" selected>🟡 Mức YELLOW — Gợi ý dàn ý, rà soát văn phong/ngữ pháp & gỡ lỗi kỹ thuật</option>
+            </select>
+          </div>
+
+          <!-- Specific Tasks Used -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-secondary);">Các bước AI đã hỗ trợ cụ thể</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="brainstorm ý tưởng và cấu trúc dàn ý ban đầu" checked class="disc-task-cb" />
+                <span>Brainstorm & gợi ý dàn ý</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="giải thích các thuật ngữ học thuật khó hiểu" checked class="disc-task-cb" />
+                <span>Giải thích khái niệm khó</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="rà soát lỗi diễn đạt, chính tả và độ mạch lạc" checked class="disc-task-cb" />
+                <span>Rà soát diễn đạt & ngữ pháp</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer" style="background: var(--bg-secondary); border-color: var(--border-subtle);">
+                <input type="checkbox" value="gợi ý kiểm thử và gỡ lỗi đoạn mã nguồn" class="disc-task-cb" />
+                <span>Hỗ trợ debug / giải thích code</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Student Verification Action -->
+          <div>
+            <label for="disc-verify" class="block text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: var(--text-secondary);">Cách bạn đã tự kiểm chứng & biên tập lại</label>
+            <textarea id="disc-verify" rows="3" class="input-field w-full px-3.5 py-2 text-sm">Toàn bộ số liệu, trích dẫn và lập luận chính đều do tôi tự viết và đối chiếu trực tiếp với giáo trình cùng các bài báo gốc trên Google Scholar.</textarea>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="button" id="btn-generate-disclosure" class="btn-primary px-4 py-2 text-sm">
+              ✨ Cập nhật Bản Khai Báo
+            </button>
+            <button type="button" id="btn-save-disclosure-to-log" class="btn-secondary px-4 py-2 text-sm">
+              📓 Lưu vào Nhật ký Minh bạch
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Output Preview -->
+        <div class="lg:col-span-6 surface-card p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-tech text-xs font-bold" style="color: var(--accent-secondary);">OUTPUT // BẢN KHAI BÁO TIẾNG VIỆT</span>
+              <button type="button" id="btn-copy-disc-vi" class="btn-secondary px-3 py-1 text-xs">📋 Sao chép bản Tiếng Việt</button>
+            </div>
+            <div id="disc-output-vi" class="p-4 rounded-xl text-sm leading-relaxed font-normal border" style="background: var(--bg-input); border-color: var(--border-subtle);"></div>
+
+            <div class="flex items-center justify-between pt-2">
+              <span class="font-mono-tech text-xs font-bold" style="color: var(--accent-secondary);">OUTPUT // ACADEMIC ENGLISH DECLARATION</span>
+              <button type="button" id="btn-copy-disc-en" class="btn-secondary px-3 py-1 text-xs">📋 Copy English Version</button>
+            </div>
+            <div id="disc-output-en" class="p-4 rounded-xl text-sm leading-relaxed font-normal border" style="background: var(--bg-input); border-color: var(--border-subtle);"></div>
+          </div>
+
+          <div class="p-3.5 rounded-xl text-xs" style="background: var(--bg-secondary); color: var(--text-secondary);">
+            📌 <strong>Mẹo nộp bài:</strong> Hãy dán đoạn khai báo này vào mục <em>Lời cảm ơn / Tuyên bố sử dụng AI (AI Disclosure)</em> ở cuối báo cáo hoặc trang bìa phụ lục để giảng viên nắm rõ quy trình làm việc trung thực của bạn.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 2: NHẬT KÝ MINH BẠCH AI & XUẤT PHỤ LỤC (PROCESS LOG)
+         ===================================================================== -->
+    <section id="view-process-log" class="app-view hidden space-y-6">
+      <div class="surface-card p-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-yellow">TOOL 02 // AI PROCESS LOG & APPENDIX EXPORTER</span>
+          <h2 class="text-xl sm:text-2xl font-bold pt-1">📓 Nhật Ký Minh Bạch Quá Trình Dùng AI</h2>
+          <p class="text-sm" style="color: var(--text-secondary);">
+            Lưu lại bằng chứng quá trình tương tác với AI (Prompt → Kết quả AI → Bước kiểm chứng của sinh viên) và xuất phụ lục chỉ với 1 cú click.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="btn-export-md" class="btn-primary px-3.5 py-2 text-xs sm:text-sm">⬇️ Tải Phụ lục (.md)</button>
+          <button type="button" id="btn-copy-log-table" class="btn-secondary px-3.5 py-2 text-xs sm:text-sm">📋 Copy Bảng Markdown</button>
+          <button type="button" id="btn-export-json" class="btn-secondary px-3.5 py-2 text-xs sm:text-sm">⬇️ Xuất JSON</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Add Log Entry Form -->
+        <div class="lg:col-span-5 surface-card p-5 space-y-4">
+          <h3 class="font-bold text-base">➕ Thêm bước sử dụng AI vào Nhật ký</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="log-stage" class="block text-xs font-semibold mb-1" style="color: var(--text-secondary);">Giai đoạn làm bài</label>
+              <select id="log-stage" class="input-field w-full px-3 py-2 text-xs sm:text-sm">
+                <option value="Tìm ý tưởng & Đề cương">1. Tìm ý tưởng & Đề cương</option>
+                <option value="Giải thích khái niệm">2. Giải thích khái niệm</option>
+                <option value="Góp ý & Chỉnh sửa nháp">3. Góp ý & Chỉnh sửa nháp</option>
+                <option value="Kiểm tra lỗi Code / Lab">4. Kiểm tra lỗi Code / Lab</option>
+                <option value="Kiểm chứng nguồn">5. Kiểm chứng nguồn</option>
+              </select>
+            </div>
+            <div>
+              <label for="log-tool" class="block text-xs font-semibold mb-1" style="color: var(--text-secondary);">Công cụ AI</label>
+              <select id="log-tool" class="input-field w-full px-3 py-2 text-xs sm:text-sm">
+                <option value="ChatGPT">ChatGPT</option>
+                <option value="Google Gemini">Google Gemini</option>
+                <option value="Claude">Claude</option>
+                <option value="GitHub Copilot">GitHub Copilot</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="log-prompt" class="block text-xs font-semibold mb-1" style="color: var(--text-secondary);">Câu lệnh Prompt bạn đã hỏi AI</label>
+            <textarea id="log-prompt" rows="2" placeholder="Ví dụ: Hãy đóng vai người phản biện và chỉ ra 3 điểm yếu trong lập luận..." class="input-field w-full px-3 py-2 text-xs sm:text-sm"></textarea>
+          </div>
+
+          <div>
+            <label for="log-ai-out" class="block text-xs font-semibold mb-1" style="color: var(--text-secondary);">Tóm tắt gợi ý của AI</label>
+            <textarea id="log-ai-out" rows="2" placeholder="Ví dụ: AI chỉ ra phần khảo sát thiếu cỡ mẫu và đề xuất tách bảng..." class="input-field w-full px-3 py-2 text-xs sm:text-sm"></textarea>
+          </div>
+
+          <div>
+            <label for="log-human-check" class="block text-xs font-semibold mb-1" style="color: var(--text-secondary);">Bước bạn tự kiểm chứng & chỉnh sửa (Quan trọng nhất)</label>
+            <textarea id="log-human-check" rows="2" placeholder="Ví dụ: Tôi tự đối chiếu lại với số liệu Google Forms (N=42) và tự viết lại Mục 3..." class="input-field w-full px-3 py-2 text-xs sm:text-sm"></textarea>
+          </div>
+
+          <button type="button" id="btn-add-log" class="btn-primary w-full py-2.5 text-sm">
+            + Ghi vào Nhật ký Minh bạch
+          </button>
+        </div>
+
+        <!-- Log Timeline & Appendix Preview -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="surface-card p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-base">Danh sách các bước đã ghi nhận</h3>
+              <button type="button" id="btn-reset-sample-logs" class="text-xs underline" style="color: var(--text-secondary);">Khôi phục dữ liệu mẫu</button>
+            </div>
+            <div id="log-entries-list" class="space-y-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 3: SOI BÀI TRƯỚC GIỜ G — LOCAL VIETNAMESE TEXT ANALYZER
+         ===================================================================== -->
+    <section id="view-vn-analyzer" class="app-view hidden space-y-6">
+      <div class="surface-card p-6 space-y-2">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-green">TOOL 03 // LOCAL VIETNAMESE RULE-BASED ANALYZER</span>
+          <span class="font-mono-tech text-xs" style="color: var(--text-secondary);">Xử lý 100% trên trình duyệt · Không lưu bài lên mạng</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold">🔍 Soi Bài Trước Giờ G — Phân Tích Văn Bản Tiếng Việt</h2>
+        <p class="text-sm" style="color: var(--text-secondary);">
+          Phát hiện các cụm từ khuôn sáo kiểu dịch máy/AI (<em>"Trong bối cảnh hiện nay"</em>, <em>"Không thể phủ nhận rằng"</em>), các khẳng định số liệu chưa gắn trích dẫn <code>[1]</code> hoặc <code>(Tác giả, Năm)</code>, và các câu quá dài gây khó đọc.
+        </p>
+      </div>
+
+      <!-- Sample Loader Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-mono-tech" style="color: var(--text-secondary);">THỬ VỚI ĐOẠN VĂN MẪU:</span>
+        <button type="button" data-vn-sample="ai-heavy" class="btn-secondary px-3 py-1.5 text-xs">
+          ⚠️ Mẫu 1: Nhiều cụm từ sáo rỗng AI & thiếu nguồn
+        </button>
+        <button type="button" data-vn-sample="mixed" class="btn-secondary px-3 py-1.5 text-xs">
+          🟡 Mẫu 2: Có nguồn nhưng câu quá dài, nhịp đều
+        </button>
+        <button type="button" data-vn-sample="human-good" class="btn-secondary px-3 py-1.5 text-xs">
+          🟢 Mẫu 3: Văn phong học thuật tự nhiên, trích dẫn rõ
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Input Editor -->
+        <div class="lg:col-span-6 surface-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <label for="vn-input-text" class="font-bold text-sm">Đoạn văn tiếng Việt cần rà soát</label>
+            <span id="vn-word-counter" class="font-mono-tech text-xs" style="color: var(--text-secondary);">0 từ · 0 câu</span>
+          </div>
+          <textarea id="vn-input-text" rows="10" class="input-field w-full p-3.5 text-sm leading-relaxed" placeholder="Dán đoạn văn báo cáo, tiểu luận tiếng Việt của bạn vào đây để quét..."></textarea>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" id="btn-run-vn-scan" class="btn-primary px-4 py-2 text-sm">🔍 Quét & Tô Sáng Điểm Cần Sửa</button>
+            <button type="button" id="btn-clear-vn-scan" class="btn-secondary px-4 py-2 text-sm">Xóa trắng</button>
+          </div>
+        </div>
+
+        <!-- Highlighted Output & Actionable Advice -->
+        <div class="lg:col-span-6 space-y-4">
+          <!-- 4 Score Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="surface-card p-3.5 text-center">
+              <div id="vn-score-natural" class="font-display text-xl font-extrabold">--</div>
+              <div class="text-[11px]" style="color: var(--text-secondary);">Độ tự nhiên TV</div>
+            </div>
+            <div class="surface-card p-3.5 text-center">
+              <div id="vn-score-cliche" class="font-display text-xl font-extrabold">--</div>
+              <div class="text-[11px]" style="color: var(--text-secondary);">Cụm sáo rỗng AI</div>
+            </div>
+            <div class="surface-card p-3.5 text-center">
+              <div id="vn-score-uncited" class="font-display text-xl font-extrabold">--</div>
+              <div class="text-[11px]" style="color: var(--text-secondary);">Câu thiếu nguồn</div>
+            </div>
+            <div class="surface-card p-3.5 text-center">
+              <div id="vn-score-long" class="font-display text-xl font-extrabold">--</div>
+              <div class="text-[11px]" style="color: var(--text-secondary);">Câu quá dài (&gt;42 từ)</div>
+            </div>
+          </div>
+
+          <!-- Highlighted Text Box -->
+          <div class="surface-card p-5 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="font-bold">Bản đồ tô sáng trực quan:</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="hl-cliche text-[11px]">Cụm sáo rỗng AI</span>
+                <span class="hl-uncited text-[11px]">Số liệu/nhận định thiếu nguồn</span>
+                <span class="hl-long text-[11px]">Câu quá dài</span>
+                <span class="hl-good text-[11px]">Trích dẫn chuẩn</span>
+              </div>
+            </div>
+            <div id="vn-highlighted-view" class="p-4 rounded-xl text-sm leading-relaxed border min-h-[140px]" style="background: var(--bg-input); border-color: var(--border-subtle);"></div>
+          </div>
+
+          <!-- Detailed Recommendations List -->
+          <div class="surface-card p-5 space-y-2">
+            <h3 class="font-bold text-sm">💡 Gợi ý chỉnh sửa chi tiết trước khi nộp bài</h3>
+            <ul id="vn-suggestions-list" class="space-y-2 text-xs sm:text-sm"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 4: NHẬN DIỆN BẰNG MÔ HÌNH — THỬ NGHIỆM (EXPERIMENTAL SIGNAL LAB)
+         ===================================================================== -->
+    <section id="view-model-signal" class="app-view hidden space-y-6">
+      <!-- Epistemic Warning Banner (Solves Question 10 & 12 from Student Form) -->
+      <div class="surface-card p-5 border-l-4" style="border-left-color: #f59e0b;">
+        <div class="flex items-start gap-3">
+          <span class="text-xl">⚠️</span>
+          <div class="space-y-1">
+            <h2 class="font-bold text-base sm:text-lg">Lưu ý quan trọng về giới hạn của Công cụ Nhận diện Văn bản AI</h2>
+            <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">
+              Các chỉ số dưới đây đo <strong>đặc trưng thống kê văn phong</strong> (độ biến thiên độ dài câu <em>Burstiness</em>, độ đa dạng từ vựng <em>Lexical Diversity</em> và mật độ từ nối khuôn mẫu) của đoạn văn đang có trong mục <em>Soi Bài</em>. <strong>Kết quả chỉ mang tính tín hiệu tham khảo để bạn tự biên tập lại bài viết, tuyệt đối không phải là bằng chứng kết luận bài do AI hay con người viết.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 surface-card p-6 space-y-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-base">📡 Phân rã 4 Tín hiệu Văn phong (Stylometric Signals)</h3>
+            <button type="button" id="btn-refresh-signals" class="btn-secondary px-3 py-1 text-xs">🔄 Cập nhật từ văn bản Soi Bài</button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Burstiness Bar -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-medium">
+                <span>1. Độ biến thiên nhịp câu (Burstiness / Sentence Variance)</span>
+                <span id="sig-burst-val" class="font-mono-tech">--</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full overflow-hidden" style="background: var(--bg-secondary);">
+                <div id="sig-burst-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 50%;"></div>
+              </div>
+              <p class="text-[11px]" style="color: var(--text-secondary);">Người viết tự nhiên thường xen kẽ câu ngắn súc tích (8–12 từ) với câu phân tích dài (25–35 từ). Văn bản AI sinh tự động thường có độ dài các câu rất đều nhau.</p>
+            </div>
+
+            <!-- Lexical Diversity Bar -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-medium">
+                <span>2. Độ đa dạng từ vựng (Type-Token Ratio / Lexical Richness)</span>
+                <span id="sig-ttr-val" class="font-mono-tech">--</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full overflow-hidden" style="background: var(--bg-secondary);">
+                <div id="sig-ttr-bar" class="h-full bg-cyan-500 transition-all duration-300" style="width: 60%;"></div>
+              </div>
+              <p class="text-[11px]" style="color: var(--text-secondary);">Tỷ lệ từ vựng không lặp lại trên tổng số từ. Điểm cao cho thấy vốn từ phong phú, cụ thể theo ngữ cảnh môn học.</p>
+            </div>
+
+            <!-- Template Connective Density -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-medium">
+                <span>3. Mật độ cụm từ chuyển ý khuôn mẫu (Formulaic Connectives)</span>
+                <span id="sig-conn-val" class="font-mono-tech">--</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full overflow-hidden" style="background: var(--bg-secondary);">
+                <div id="sig-conn-bar" class="h-full bg-amber-500 transition-all duration-300" style="width: 40%;"></div>
+              </div>
+              <p class="text-[11px]" style="color: var(--text-secondary);">Mật độ cao các cụm mở đầu câu kiểu công thức (<em>"Bên cạnh đó,"</em>, <em>"Hơn thế nữa,"</em>, <em>"Tóm lại,"</em>) làm bài viết mang cảm giác máy móc.</p>
+            </div>
+
+            <!-- Evidence Grounding Signal -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-medium">
+                <span>4. Mật độ neo bằng chứng & trích dẫn cụ thể (Evidence Anchoring)</span>
+                <span id="sig-evid-val" class="font-mono-tech">--</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full overflow-hidden" style="background: var(--bg-secondary);">
+                <div id="sig-evid-bar" class="h-full bg-indigo-500 transition-all duration-300" style="width: 40%;"></div>
+              </div>
+              <p class="text-[11px]" style="color: var(--text-secondary);">Đo lường sự hiện diện của trích dẫn chuẩn <code>[1]</code>, <code>(Tác giả, 2026)</code> và số liệu thực nghiệm có nguồn đối chứng.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Explanation Card -->
+        <div class="lg:col-span-5 surface-card p-6 space-y-4">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-yellow">INTERPRETATION GUIDE</span>
+          <h3 class="font-bold text-base">Cách đọc kết quả đúng chuẩn Học thuật</h3>
+          <div id="sig-summary-box" class="p-4 rounded-xl border text-sm space-y-2" style="background: var(--bg-input); border-color: var(--border-subtle);"></div>
+          <div class="space-y-2 text-xs" style="color: var(--text-secondary);">
+            <p>✅ <strong>Vì sao không nên tin tuyệt đối vào phần trăm AI Detector?</strong> Các bài viết học thuật tiếng Việt hoặc tiếng Anh của sinh viên không bản ngữ thường dùng cấu trúc câu chuẩn mực nên rất dễ bị các công cụ thương mại báo nhầm (False Positive).</p>
+            <p>✅ <strong>Cách bảo vệ bài làm tốt nhất:</strong> Thay vì cố dùng tool "paraphrase lách AI", hãy giữ lại <strong>Nhật ký Minh bạch (Tool 02)</strong>, các bản nháp lịch sử (Version History trên Google Docs) và <strong>Bản khai báo AI (Tool 01)</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 5: TỦ PROMPT TỰ HỌC & PROMPT REFINER (PROMPT VAULT)
+         ===================================================================== -->
+    <section id="view-prompt-vault" class="app-view hidden space-y-6">
+      <div class="surface-card p-6 space-y-2">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-green">TOOL 05 // SELF-LEARNING PROMPT VAULT & CHALLENGE</span>
+          <span class="font-mono-tech text-xs" style="color: var(--text-secondary);">Biến AI thành Trợ giảng Đại học (Tutor Mode)</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold">🧠 Tủ Prompt Tự Học & Thử Thách Nâng Cấp Prompt</h2>
+        <p class="text-sm" style="color: var(--text-secondary);">
+          Tuyển tập các mẫu câu lệnh giúp bạn dùng AI để hiểu sâu bản chất bài học, hướng dẫn làm bài Lab từng bước và tự kiểm tra kiến thức trước kỳ thi mà không biến AI thành người làm hộ.
+        </p>
+      </div>
+
+      <!-- Category Filter Buttons -->
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-prompt-cat="all" class="prompt-cat-btn btn-primary px-3.5 py-1.5 text-xs">Tất cả mẫu (6)</button>
+        <button type="button" data-prompt-cat="slides" class="prompt-cat-btn btn-secondary px-3.5 py-1.5 text-xs">📚 Tóm tắt Slide & Ôn thi</button>
+        <button type="button" data-prompt-cat="lab" class="prompt-cat-btn btn-secondary px-3.5 py-1.5 text-xs">🧪 Hướng dẫn làm Lab & Chụp ảnh bằng chứng</button>
+        <button type="button" data-prompt-cat="critique" class="prompt-cat-btn btn-secondary px-3.5 py-1.5 text-xs">🔍 Phản biện & Kiểm chứng nguồn</button>
+      </div>
+
+      <div id="prompt-vault-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- =====================================================================
+         VIEW 6: CHECKER & PERSONA — 10 TÌNH HUỐNG HỌC THUẬT
+         ===================================================================== -->
+    <section id="view-checker-persona" class="app-view hidden space-y-6">
+      <div class="surface-card p-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="font-mono-tech text-xs px-2.5 py-1 rounded policy-red">TOOL 06 // 10 ACADEMIC AI SCENARIOS & PERSONA</span>
+          <h2 class="text-xl sm:text-2xl font-bold pt-1">🎯 AI Use Checker & Khám Phá Persona Học Tập (10 Tình Huống)</h2>
+          <p class="text-sm" style="color: var(--text-secondary);">
+            Đánh giá từng tình huống thực tế bên dưới theo 3 mức: <strong>🟢 Hợp lệ (Green)</strong>, <strong>🟡 Cần khai báo & kiểm chứng (Yellow)</strong>, hoặc <strong>🔴 Vi phạm (Red)</strong>.
+          </p>
+        </div>
+        <div class="surface-card px-4 py-3 text-center" style="background: var(--bg-secondary);">
+          <div id="Persona-live-title" class="font-display font-bold text-sm" style="color: var(--accent-secondary);">Chưa hoàn thành đủ câu</div>
+          <div id="Persona-live-sub" class="text-xs" style="color: var(--text-secondary);">Đã trả lời: 0/10 tình huống</div>
+        </div>
+      </div>
+
+      <div id="scenarios-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="app-toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-medium border flex items-center gap-2"
+       style="background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--accent-primary);">
+    <span>✨</span>
+    <span id="app-toast-msg">Đã sao chép vào bộ nhớ tạm!</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t py-5 mt-10 text-xs" style="border-color: var(--border-subtle); color: var(--text-secondary);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <strong>AI Smart Campus — Use AI, Don't Let AI Use You</strong> · Dự án học thuật thúc đẩy sử dụng AI có trách nhiệm.
+      </div>
+      <div class="font-mono-tech">
+        Client-Side Privacy · Zero External Telemetry · Multi-Theme Design System v2.0
+      </div>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    (function () {
+      // -----------------------------------------------------------------------
+      // 1. STATE & DATA INITIALIZATION
+      // -----------------------------------------------------------------------
+      const THEME_LABELS = {
+        'neural-glass': 'THEME: NEURAL GLASS STUDIO',
+        'verify-hud': 'THEME: VERA TELEMETRY HUD',
+        'quantum-neon': 'THEME: QUANTUM HOLO-BENTO',
+        'academic-light': 'THEME: DAYLIGHT COPILOT'
+      };
+
+      const DEFAULT_LOGS = [
+        {
+          id: 'log-1',
+          time: '2026-11-05 09:15',
+          stage: 'Tìm ý tưởng & Đề cương',
+          tool: 'ChatGPT',
+          prompt: 'Gợi ý cấu trúc báo cáo đánh giá thói quen dùng AI của sinh viên đại học gồm 4 phần chính.',
+          aiOut: 'Đề xuất 4 mục: Bối cảnh, Kết quả khảo sát nhu cầu, Giải pháp web AI Smart Campus và Kế hoạch đánh giá.',
+          humanCheck: 'Nhóm tự điều chỉnh lại mục 2 và mục 4 để bám sát bộ 42 phiếu khảo sát thực tế của sinh viên FPTU.'
+        },
+        {
+          id: 'log-2',
+          time: '2026-11-05 10:05',
+          stage: 'Giải thích khái niệm',
+          tool: 'Google Gemini',
+          prompt: 'Giải thích khái niệm Burstiness và Perplexity trong phân tích văn bản bằng ngôn ngữ dễ hiểu cho sinh viên năm nhất.',
+          aiOut: 'Giải thích Burstiness là độ biến thiên chiều dài câu và Perplexity là mức độ bất ngờ của từ tiếp theo.',
+          humanCheck: 'Đã đối chiếu định nghĩa với tài liệu NLP gốc và viết lại ví dụ minh họa bằng tiếng Việt.'
+        },
+        {
+          id: 'log-3',
+          time: '2026-11-05 10:40',
+          stage: 'Góp ý & Chỉnh sửa nháp',
+          tool: 'Claude',
+          prompt: 'Rà soát đoạn mở đầu báo cáo xem có cụm từ nào sáo rỗng hoặc thiếu nguồn trích dẫn không.',
+          aiOut: 'Chỉ ra 2 câu mở đầu dùng cụm "Trong kỷ nguyên số hiện nay" và 1 số liệu phần trăm chưa ghi nguồn.',
+          humanCheck: 'Đã xóa câu sáo rỗng và bổ sung trích dẫn trực tiếp từ báo cáo UNESCO (2023) kèm số trang.'
+        }
+      ];
+
+      const VN_SAMPLES = {
+        'ai-heavy': `Trong bối cảnh hiện nay, trí tuệ nhân tạo đang đóng một vai trò vô cùng quan trọng trong giáo dục đại học. Không thể phủ nhận rằng các công cụ như ChatGPT hay Gemini là chìa khóa then chốt giúp sinh viên tiết kiệm thời gian. Theo nhiều nghiên cứu, có tới 89% sinh viên phụ thuộc hoàn toàn vào AI khi làm bài tập lớn mà không kiểm tra lại thông tin. Bên cạnh đó, việc thiếu kỹ năng kiểm chứng nguồn khiến người học dễ mắc phải các thông tin sai lệch do mô hình ngôn ngữ tự suy diễn ra trong quá trình tổng hợp văn bản dài mà người đọc nếu chỉ nhìn lướt qua bề mặt sẽ hoàn toàn không thể nhận biết được các lỗi ngụy tạo tinh vi này. Tóm lại, có thể thấy rằng việc nâng cao nhận thức về đạo đức AI là một yêu cầu cấp thiết.`,
+        'mixed': `Trí tuệ nhân tạo tạo sinh mang lại nhiều cơ hội hỗ trợ sinh viên tóm tắt tài liệu và gợi ý đề cương học tập (UNESCO, 2023). Tuy nhiên, trong quá trình thực hiện khảo sát tại trường đại học vào tháng 10 năm 2026, rất nhiều sinh viên cho biết họ thường xuyên sao chép trực tiếp đoạn văn do công cụ sinh ra vào bài báo cáo cuối kỳ bởi vì áp lực thời gian gấp rút và chưa nắm rõ ranh giới giữa việc dùng AI để hỗ trợ tư duy với việc để AI làm thay toàn bộ nghĩa vụ học tập của người học. Hơn thế nữa, các chuyên gia cho rằng có khoảng 65% nguồn tài liệu tham khảo do chatbot tự gợi ý là không tồn tại trên thực tế.`,
+        'human-good': `Khảo sát nhu cầu ban đầu trên 42 sinh viên tại dự án AI Smart Campus (10/2026) cho thấy hai trở ngại phổ biến nhất là khó kiểm chứng thông tin do AI sinh ra và lúng túng khi trích dẫn việc sử dụng AI trong bài tập [1]. Thay vì cấm đoán hoàn toàn, khung chính sách Ba Mức (Green - Yellow - Red) giúp phân tách rõ các hoạt động tự học được khuyến khích với các hành vi cần khai báo minh bạch (Phan & cộng sự, 2026). Khi sinh viên tự ghi lại nhật ký câu lệnh (Process Log) và đối chiếu từng nhận định với tài liệu gốc, AI trở thành trợ lý phản biện thay vì làm suy giảm tư duy độc lập.`
+      };
+
+      const PROMPT_VAULT_ITEMS = [
+        {
+          id: 'p1',
+          cat: 'slides',
+          badge: '🟢 GREEN · TỰ HỌC SLIDE',
+          title: 'Trợ giảng Tóm tắt Slide & Khoanh vùng Trọng tâm Ôn thi',
+          weak: 'Tóm tắt file slide này giúp mình.',
+          strong: 'Bạn là trợ giảng đại học. Tôi sẽ gửi nội dung slide bài giảng. Hãy: (1) Tóm tắt từng mục lớn bằng tiếng Việt ngắn gọn; (2) Liệt kê các ý cốt lõi bắt buộc phải nhớ; (3) Giải thích các thuật ngữ khó bằng ví dụ thực tế cho sinh viên năm nhất; (4) Gợi ý 3 câu hỏi tự luận kiểm tra độ hiểu bài (chưa đưa đáp án ngay để tôi tự trả lời trước).'
+        },
+        {
+          id: 'p2',
+          cat: 'lab',
+          badge: '🟢 GREEN · HƯỚNG DẪN LAB',
+          title: 'Hướng dẫn Thực hành Lab & Nhắc Chỗ Chụp Màn Hình Bằng Chứng',
+          weak: 'Giải bài lab này cho mình với.',
+          strong: 'Bạn là hướng dẫn viên phòng Lab đại học. Hãy đọc đề bài Lab này và hướng dẫn tôi tự thực hiện từng bước: (1) Mục tiêu kiến thức & công cụ cần chuẩn bị; (2) Hướng dẫn thao tác CLI/GUI theo đúng thứ tự kèm giải thích vì sao dùng lệnh đó; (3) Đánh dấu rõ "[📸 CẦN CHỤP MÀN HÌNH]" tại các bước có kết quả quan trọng cần đưa vào báo cáo; (4) Cảnh báo các lỗi sinh viên hay gặp và cách tự khắc phục.'
+        },
+        {
+          id: 'p3',
+          cat: 'critique',
+          badge: '🟡 YELLOW · PHẢN BIỆN NHÁP',
+          title: 'Giám khảo Phản biện Lập luận (Không viết hộ bài)',
+          weak: 'Viết lại đoạn văn này cho hay hơn.',
+          strong: 'Tôi đã tự viết đoạn phân tích dưới đây cho bài báo cáo. Tuyệt đối KHÔNG viết lại đoạn văn thay tôi. Hãy đóng vai giảng viên chấm bài khó tính để: (1) Chỉ ra các câu lập luận còn thiếu bằng chứng hoặc nhảy cóc logic; (2) Đánh dấu các cụm từ sáo rỗng hoặc tối nghĩa; (3) Đặt 3 câu hỏi gợi mở để tôi tự bổ sung dẫn chứng.'
+        },
+        {
+          id: 'p4',
+          cat: 'critique',
+          badge: '🟢 GREEN · KIỂM CHỨNG NGUỒN',
+          title: 'Kiểm toán Hallucination & Tách Nhận định Cần Xác minh',
+          weak: 'Thông tin này có đúng không?',
+          strong: 'Hãy tách đoạn trả lời sau đây thành từng nhận định đơn lẻ (atomic claims). Với mỗi nhận định, hãy phân loại: đâu là kiến thức phổ quát, đâu là con số/sự kiện bắt buộc phải tra cứu nguồn gốc độc lập, và gợi ý từ khóa tiếng Anh chính xác để tôi tự kiểm tra trên Google Scholar.'
+        },
+        {
+          id: 'p5',
+          cat: 'slides',
+          badge: '🟢 GREEN · PHƯƠNG PHÁP FEYNMAN',
+          title: 'Luyện Giải thích Khái niệm Khó theo Phương pháp Feynman',
+          weak: 'Giải thích thuật toán này là gì.',
+          strong: 'Tôi đang học về [Tên khái niệm/thuật toán] và sẽ thử giải thích lại theo cách hiểu của tôi ở bên dưới. Hãy lắng nghe phần giải thích của tôi, chỉ ra điểm tôi đang hiểu đúng, điểm tôi đang hiểu nhầm bản chất, và đặt 1 câu hỏi tình huống nhỏ để kiểm tra xem tôi đã thực sự nắm vững chưa.'
+        },
+        {
+          id: 'p6',
+          cat: 'lab',
+          badge: '🟡 YELLOW · GỠ LỖI CODE',
+          title: 'Gỡ lỗi Code theo Hướng Gợi mở Tư duy (Socratic Debugging)',
+          weak: 'Sửa đoạn code bị lỗi này giúp mình.',
+          strong: 'Đoạn code của tôi đang gặp lỗi như bên dưới. Đừng đưa ngay toàn bộ code đã sửa hoàn chỉnh. Hãy: (1) Giải thích nguyên nhân gốc rễ tại dòng gây ra lỗi; (2) Gợi ý hướng xử lý để tôi tự sửa; (3) Nêu 1 test case biên (edge case) mà tôi cần kiểm tra thêm sau khi sửa xong.'
+        }
+      ];
+
+      const SCENARIOS = [
+        {
+          id: 1,
+          title: 'Tình huống 01: Nhờ AI viết trọn bài tiểu luận',
+          desc: 'Sinh viên yêu cầu ChatGPT viết toàn bộ bài tiểu luận 1.500 từ rồi nộp thẳng lên hệ thống LMS mà không chỉnh sửa hay khai báo.',
+          answer: 'red',
+          explain: '🔴 RED (Vi phạm liêm chính): Nộp sản phẩm do AI sinh ra hoàn toàn như bài làm cá nhân là gian lận học thuật.'
+        },
+        {
+          id: 2,
+          title: 'Tình huống 02: Hỏi AI giải thích khái niệm khó trong slide',
+          desc: 'Sau giờ học, sinh viên nhờ Gemini giải thích lại khái niệm "Opaque Predicate" bằng ví dụ đời thường để hiểu bài trước khi tự làm bài tập.',
+          answer: 'green',
+          explain: '🟢 GREEN (Hợp lệ & Khuyến khích): Dùng AI như gia sư giải thích khái niệm giúp tăng hiệu quả tự học mà vẫn giữ nguyên tư duy độc lập.'
+        },
+        {
+          id: 3,
+          title: 'Tình huống 03: Nhờ AI gợi ý dàn ý & có đính kèm khai báo',
+          desc: 'Sinh viên nhờ Claude gợi ý khung dàn ý 5 mục cho bài báo cáo, sau đó tự tìm tài liệu viết bài và thêm mục "Khai báo sử dụng AI" ở cuối báo cáo.',
+          answer: 'yellow',
+          explain: '🟡 YELLOW (Có điều kiện): Việc dùng AI hỗ trợ lập dàn ý được chấp nhận khi môn học cho phép, sinh viên tự viết nội dung và khai báo minh bạch.'
+        },
+        {
+          id: 4,
+          title: 'Tình huống 04: Chép nguyên danh sách tài liệu tham khảo do AI gợi ý',
+          desc: 'Sinh viên bảo AI "Hãy thêm 5 trích dẫn chuẩn APA vào cuối bài" rồi copy nguyên các nguồn đó nộp bài mà không mở thử link hay đọc bài báo gốc.',
+          answer: 'red',
+          explain: '🔴 RED (Nguy cơ bịa nguồn / Hallucination): LLM thường ghép nối tên tác giả và tên tạp chí tạo ra trích dẫn giả (fake citations). Bắt buộc phải tự đọc và kiểm chứng nguồn.'
+        },
+        {
+          id: 5,
+          title: 'Tình huống 05: Dùng AI tạo câu hỏi trắc nghiệm ôn tập',
+          desc: 'Trước kỳ thi, sinh viên dán ghi chú bài học của mình vào AI và yêu cầu tạo 10 câu hỏi trắc nghiệm để tự kiểm tra trí nhớ.',
+          answer: 'green',
+          explain: '🟢 GREEN (Hợp lệ): Dùng AI làm công cụ tự khảo bài (Active Recall) là phương pháp học tập chủ động rất hiệu quả.'
+        },
+        {
+          id: 6,
+          title: 'Tình huống 06: Nhờ AI sửa lỗi ngữ pháp tiếng Anh cho bản nháp tự viết',
+          desc: 'Sinh viên tự viết toàn bộ bài báo cáo bằng tiếng Anh, sau đó dùng AI kiểm tra lỗi ngữ pháp/chính tả, tự duyệt lại từng câu và ghi rõ trong Process Log.',
+          answer: 'yellow',
+          explain: '🟡 YELLOW (Cần khai báo): Biên tập ngôn ngữ dựa trên bản nháp gốc của sinh viên là hợp lệ ở đa số môn học nếu có ghi nhận trong bản khai báo AI.'
+        },
+        {
+          id: 7,
+          title: 'Tình huống 07: Dùng công cụ Paraphrase để lách trình quét AI',
+          desc: 'Sinh viên lấy bài do AI viết, sau đó đưa qua một công cụ viết lại câu (spinner/paraphraser) để giảm điểm AI Detector rồi nộp như bài tự viết.',
+          answer: 'red',
+          explain: '🔴 RED (Vi phạm nghiêm trọng): Cố tình che giấu nguồn gốc văn bản do AI tạo ra thay vì tự tư duy là hành vi vi phạm tính trung thực học thuật.'
+        },
+        {
+          id: 8,
+          title: 'Tình huống 08: Hỏi nguyên nhân lỗi biên dịch (Compiler Error)',
+          desc: 'Khi làm lab lập trình, sinh viên dán thông báo lỗi của trình biên dịch vào AI để hiểu ý nghĩa lỗi, sau đó tự mình viết code sửa hàm đó.',
+          answer: 'green',
+          explain: '🟢 GREEN (Hợp lệ): Tìm hiểu ý nghĩa thông báo lỗi để tự sửa code giúp rút ngắn thời gian tra cứu mà không đánh mất kỹ năng lập trình.'
+        },
+        {
+          id: 9,
+          title: 'Tình huống 09: Tải dữ liệu cá nhân nhạy cảm của bạn học lên AI công cộng',
+          desc: 'Để phân tích dữ liệu nhanh, thành viên CLB tải toàn bộ bảng Excel chứa Họ tên, CCCD, Số điện thoại và Email của 100 sinh viên lên chatbot công cộng.',
+          answer: 'red',
+          explain: '🔴 RED (Vi phạm Quyền riêng tư & Bảo mật dữ liệu): Tuyệt đối không đưa dữ liệu định danh cá nhân (PII) của sinh viên lên các công cụ AI bên ngoài.'
+        },
+        {
+          id: 10,
+          title: 'Tình huống 10: Nhờ AI đóng vai người phản biện chỉ ra lỗ hổng bài viết',
+          desc: 'Sau khi viết xong bản thảo, sinh viên yêu cầu AI chỉ ra 3 điểm lập luận còn yếu, sau đó tự tra cứu thêm số liệu thực tế để bổ sung và lưu vào Nhật ký AI.',
+          answer: 'yellow',
+          explain: '🟡 YELLOW (Thực hành tốt có khai báo): Dùng AI làm người phản biện bản nháp và lưu lại Process Log thể hiện tư duy làm chủ công nghệ.'
+        }
+      ];
+
+      let logs = [];
+      let scenarioChoices = {};
+
+      // Safe localStorage helpers
+      function loadLogs() {
+        try {
+          const raw = localStorage.getItem('aisc_v2_logs');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {}
+        return DEFAULT_LOGS.slice();
+      }
+
+      function saveLogs() {
+        try {
+          localStorage.setItem('aisc_v2_logs', JSON.stringify(logs));
+        } catch (e) {}
+        updateTelemetryCounts();
+      }
+
+      logs = loadLogs();
+
+      // -----------------------------------------------------------------------
+      // 2. TOAST HELPER & CLIPBOARD FALLBACK
+      // -----------------------------------------------------------------------
+      let toastTimer = null;
+      function showToast(msg) {
+        const toast = document.getElementById('app-toast');
+        const msgEl = document.getElementById('app-toast-msg');
+        if (!toast || !msgEl) return;
+        msgEl.textContent = msg;
+        toast.classList.remove('hidden');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 2800);
+      }
+
+      function copyText(text, successMsg) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg || 'Đã sao chép vào bộ nhớ tạm!');
+          }).catch(() => fallbackCopy(text, successMsg));
+        } else {
+          fallbackCopy(text, successMsg);
+        }
+      }
+
+      function fallbackCopy(text, successMsg) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast(successMsg || 'Đã sao chép vào bộ nhớ tạm!');
+        } catch (e) {
+          showToast('Đã chọn văn bản để sao chép.');
+        }
+        document.body.removeChild(ta);
+      }
+
+      // -----------------------------------------------------------------------
+      // 3. THEME SWITCHER & NAVIGATION
+      // -----------------------------------------------------------------------
+      function setTheme(themeName) {
+        document.documentElement.setAttribute('data-theme', themeName);
+        const indicator = document.getElementById('active-theme-indicator');
+        if (indicator && THEME_LABELS[themeName]) {
+          indicator.textContent = THEME_LABELS[themeName];
+        }
+        document.querySelectorAll('.theme-switch-btn').forEach(btn => {
+          const isMatch = btn.getAttribute('data-theme-btn') === themeName;
+          btn.style.background = isMatch ? 'var(--accent-primary)' : 'transparent';
+          btn.style.color = isMatch ? '#ffffff' : 'var(--text-secondary)';
+        });
+        try {
+          localStorage.setItem('aisc_v2_theme', themeName);
+        } catch (e) {}
+      }
+
+      function switchView(viewId) {
+        document.querySelectorAll('.app-view').forEach(sec => {
+          if (sec.id === 'view-' + viewId) {
+            sec.classList.remove('hidden');
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+          if (btn.getAttribute('data-nav') === viewId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Wire Theme Switcher Buttons
+      document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.getAttribute('data-theme-btn');
+          setTheme(t);
+          showToast('Đã chuyển sang giao diện: ' + t);
+        });
+      });
+
+      document.querySelectorAll('[data-theme-card]').forEach(card => {
+        card.addEventListener('click', () => {
+          const t = card.getAttribute('data-theme-card');
+          setTheme(t);
+          showToast('Đã kích hoạt theme: ' + t);
+        });
+      });
+
+      // Wire Navigation Tabs & Quick Goto Cards
+      document.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchView(btn.getAttribute('data-nav'));
+        });
+      });
+
+      document.querySelectorAll('[data-goto]').forEach(el => {
+        el.addEventListener('click', () => {
+          switchView(el.getAttribute('data-goto'));
+        });
+      });
+
+      // -----------------------------------------------------------------------
+      // 4. TOOL 01: AI DISCLOSURE BUILDER
+      // -----------------------------------------------------------------------
+      function renderDisclosure() {
+        const course = (document.getElementById('disc-course').value || 'học phần này').trim();
+        const assignment = (document.getElementById('disc-assignment').value || 'bài báo cáo').trim();
+        const level = document.getElementById('disc-level').value;
+        const verifyText = (document.getElementById('disc-verify').value || '').trim();
+
+        const tools = Array.from(document.querySelectorAll('.disc-tool-cb:checked')).map(cb => cb.value);
+        const tasks = Array.from(document.querySelectorAll('.disc-task-cb:checked')).map(cb => cb.value);
+
+        const toolStr = tools.length > 0 ? tools.join(', ') : 'công cụ AI tạo sinh';
+        const taskStr = tasks.length > 0 ? tasks.join('; ') : 'hỗ trợ tìm hiểu thông tin ban đầu';
+        const levelLabelVi = level === 'green' ? 'Mức GREEN (Hỗ trợ tự học & tra cứu khái niệm)' : 'Mức YELLOW (Hỗ trợ có điều kiện & có khai báo minh bạch)';
+        const levelLabelEn = level === 'green' ? 'GREEN Tier (Conceptual Learning & Exploration)' : 'YELLOW Tier (Conditional Assistance with Full Disclosure)';
+
+        const viText = `[TUYÊN BỐ SỬ DỤNG AI — ${levelLabelVi}]\nTrong quá trình thực hiện "${assignment}" thuộc học phần "${course}", tôi/nhóm đã sử dụng ${toolStr} như công cụ hỗ trợ học tập cho các mục đích: ${taskStr}. ${verifyText} Tôi/nhóm xin cam đoan không sử dụng AI để viết thay nội dung cốt lõi và hoàn toàn chịu trách nhiệm về tính chính xác, trung thực học thuật của bài nộp.`;
+
+        const enText = `[AI USE DISCLOSURE — ${levelLabelEn}]\nWhile preparing "${assignment}" for "${course}", the author(s) used ${toolStr} strictly as an academic learning assistant for the following purposes: ${taskStr}. All core arguments, data interpretations, and final written sections were independently authored, fact-checked, and verified against primary academic sources by the student(s).`;
+
+        document.getElementById('disc-output-vi').innerText = viText;
+        document.getElementById('disc-output-en').innerText = enText;
+      }
+
+      document.getElementById('btn-generate-disclosure').addEventListener('click', () => {
+        renderDisclosure();
+        showToast('Đã cập nhật nội dung Bản khai báo AI!');
+      });
+
+      ['disc-course', 'disc-assignment', 'disc-level', 'disc-verify'].forEach(id => {
+        document.getElementById(id).addEventListener('input', renderDisclosure);
+      });
+      document.querySelectorAll('.disc-tool-cb, .disc-task-cb').forEach(cb => {
+        cb.addEventListener('change', renderDisclosure);
+      });
+
+      document.getElementById('btn-copy-disc-vi').addEventListener('click', () => {
+        copyText(document.getElementById('disc-output-vi').innerText, 'Đã sao chép Bản khai báo Tiếng Việt!');
+      });
+
+      document.getElementById('btn-copy-disc-en').addEventListener('click', () => {
+        copyText(document.getElementById('disc-output-en').innerText, 'Copied English AI Disclosure!');
+      });
+
+      document.getElementById('btn-save-disclosure-to-log').addEventListener('click', () => {
+        const course = document.getElementById('disc-course').value || 'Học phần';
+        const tools = Array.from(document.querySelectorAll('.disc-tool-cb:checked')).map(cb => cb.value).join(', ') || 'AI';
+        const verifyText = document.getElementById('disc-verify').value || 'Đã tự kiểm chứng toàn bộ nguồn.';
+        logs.unshift({
+          id: 'log-' + Date.now(),
+          time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+          stage: 'Khai báo tổng kết (' + course + ')',
+          tool: tools,
+          prompt: 'Tạo tuyên bố minh bạch sử dụng AI cho bài nộp.',
+          aiOut: 'Sinh mẫu khai báo chuẩn học thuật song ngữ Việt - Anh.',
+          humanCheck: verifyText
+        });
+        saveLogs();
+        renderLogs();
+        showToast('Đã lưu Bản khai báo vào Nhật ký Minh bạch!');
+      });
+
+      // -----------------------------------------------------------------------
+      // 5. TOOL 02: AI PROCESS LOG & APPENDIX EXPORTER
+      // -----------------------------------------------------------------------
+      function updateTelemetryCounts() {
+        const badge = document.getElementById('nav-log-badge');
+        const statLogs = document.getElementById('stat-logs-count');
+        if (badge) badge.textContent = String(logs.length);
+        if (statLogs) statLogs.textContent = String(logs.length);
+      }
+
+      function renderLogs() {
+        const listEl = document.getElementById('log-entries-list');
+        if (!listEl) return;
+        updateTelemetryCounts();
+
+        if (logs.length === 0) {
+          listEl.innerHTML = `<div class="p-6 text-center text-xs rounded-xl border" style="border-color: var(--border-subtle); color: var(--text-secondary);">Chưa có mục nhật ký nào. Hãy thêm bước sử dụng AI ở biểu mẫu bên trái.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = logs.map((item, idx) => `
+          <div class="p-4 rounded-xl border space-y-2" style="background: var(--bg-input); border-color: var(--border-subtle);">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="font-mono-tech text-xs px-2 py-0.5 rounded policy-green">#${idx + 1} · ${escapeHtml(item.stage)}</span>
+                <span class="font-mono-tech text-xs" style="color: var(--accent-secondary);">${escapeHtml(item.tool)}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono-tech text-[11px]" style="color: var(--text-muted);">${escapeHtml(item.time)}</span>
+                <button type="button" data-del-log="${escapeHtml(item.id)}" class="text-xs px-2 py-0.5 rounded hover:bg-red-500/20 text-red-400">Xóa</button>
+              </div>
+            </div>
+            <div class="text-xs space-y-1">
+              <div><strong style="color: var(--text-secondary);">Prompt đã hỏi:</strong> ${escapeHtml(item.prompt)}</div>
+              <div><strong style="color: var(--text-secondary);">Gợi ý của AI:</strong> ${escapeHtml(item.aiOut)}</div>
+              <div class="pt-1 text-emerald-400"><strong>✓ Sinh viên tự kiểm chứng & chỉnh sửa:</strong> ${escapeHtml(item.humanCheck)}</div>
+            </div>
+          </div>
+        `).join('');
+
+        listEl.querySelectorAll('[data-del-log]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-del-log');
+            logs = logs.filter(l => l.id !== targetId);
+            saveLogs();
+            renderLogs();
+            showToast('Đã xóa mục nhật ký.');
+          });
+        });
+      }
+
+      document.getElementById('btn-add-log').addEventListener('click', () => {
+        const stage = document.getElementById('log-stage').value;
+        const tool = document.getElementById('log-tool').value;
+        const promptVal = document.getElementById('log-prompt').value.trim();
+        const aiOutVal = document.getElementById('log-ai-out').value.trim();
+        const humanCheckVal = document.getElementById('log-human-check').value.trim();
+
+        if (!promptVal || !humanCheckVal) {
+          showToast('Vui lòng nhập Prompt đã hỏi và Bước bạn tự kiểm chứng!');
+          return;
+        }
+
+        logs.unshift({
+          id: 'log-' + Date.now(),
+          time: new Date().toISOString().slice(0, 16).replace('T', ' '),
+          stage,
+          tool,
+          prompt: promptVal,
+          aiOut: aiOutVal || 'AI cung cấp gợi ý tham khảo ban đầu.',
+          humanCheck: humanCheckVal
+        });
+
+        document.getElementById('log-prompt').value = '';
+        document.getElementById('log-ai-out').value = '';
+        document.getElementById('log-human-check').value = '';
+        saveLogs();
+        renderLogs();
+        showToast('Đã thêm vào Nhật ký Minh bạch AI!');
+      });
+
+      document.getElementById('btn-reset-sample-logs').addEventListener('click', () => {
+        logs = DEFAULT_LOGS.slice();
+        saveLogs();
+        renderLogs();
+        showToast('Đã khôi phục 3 mục nhật ký mẫu.');
+      });
+
+      function buildMarkdownAppendix() {
+        let md = `# PHỤ LỤC MINH BẠCH SỬ DỤNG AI (AI PROCESS LOG)\n\n`;
+        md += `| STT | Thời gian | Giai đoạn | Công cụ AI | Prompt đã hỏi | Tóm tắt gợi ý AI | Bước tự kiểm chứng & viết lại của Sinh viên |\n`;
+        md += `| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n`;
+        logs.forEach((l, i) => {
+          md += `| ${i + 1} | ${l.time} | ${l.stage} | ${l.tool} | ${l.prompt.replace(/\|/g, '/')} | ${l.aiOut.replace(/\|/g, '/')} | ${l.humanCheck.replace(/\|/g, '/')} |\n`;
+        });
+        return md;
+      }
+
+      function triggerDownload(filename, content, mime) {
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById('btn-export-md').addEventListener('click', () => {
+        triggerDownload('Phu_Luc_Nhat_Ky_AI_Smart_Campus.md', buildMarkdownAppendix(), 'text/markdown;charset=utf-8');
+        showToast('Đã tải xuống file Phụ lục Markdown (.md)!');
+      });
+
+      document.getElementById('btn-copy-log-table').addEventListener('click', () => {
+        copyText(buildMarkdownAppendix(), 'Đã sao chép bảng Phụ lục Markdown!');
+      });
+
+      document.getElementById('btn-export-json').addEventListener('click', () => {
+        triggerDownload('ai_process_log.json', JSON.stringify(logs, null, 2), 'application/json;charset=utf-8');
+        showToast('Đã tải xuống file ai_process_log.json!');
+      });
+
+      // -----------------------------------------------------------------------
+      // 6. TOOL 03 & 04: LOCAL VIETNAMESE TEXT ANALYZER & SIGNAL LAB
+      // -----------------------------------------------------------------------
+      const CLICHE_PHRASES = [
+        'trong bối cảnh hiện nay',
+        'không thể phủ nhận rằng',
+        'đóng một vai trò vô cùng quan trọng',
+        'đóng vai trò vô cùng quan trọng',
+        'chìa khóa then chốt',
+        'tóm lại, có thể thấy rằng',
+        'bên cạnh đó,',
+        'hơn thế nữa,',
+        'trong kỷ nguyên số'
+      ];
+
+      const VAGUE_AUTHORITY = [
+        'theo nhiều nghiên cứu',
+        'các chuyên gia cho rằng',
+        'nhiều ý kiến cho rằng',
+        'nghiên cứu đã chỉ ra rằng'
+      ];
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function analyzeVietnameseText() {
+        const raw = document.getElementById('vn-input-text').value.trim();
+        const wordCounter = document.getElementById('vn-word-counter');
+        const hlView = document.getElementById('vn-highlighted-view');
+        const sugList = document.getElementById('vn-suggestions-list');
+
+        if (!raw) {
+          wordCounter.textContent = '0 từ · 0 câu';
+          hlView.innerHTML = `<span style="color: var(--text-muted);">Hãy nhập hoặc chọn một đoạn văn mẫu phía trên để xem bản đồ phân tích...</span>`;
+          sugList.innerHTML = `<li>Chưa có văn bản để phân tích.</li>`;
+          return;
+        }
+
+        const words = raw.split(/\s+/).filter(Boolean);
+        const sentences = raw.split(/(?<=[.!?…])\s+/).filter(s => s.trim().length > 0);
+        wordCounter.textContent = `${words.length} từ · ${sentences.length} câu`;
+
+        let clicheCount = 0;
+        let uncitedCount = 0;
+        let longSentCount = 0;
+        let validCitationCount = 0;
+        const suggestions = [];
+
+        const sentLengths = [];
+
+        const renderedSentences = sentences.map((sent, idx) => {
+          const sWords = sent.trim().split(/\s+/).filter(Boolean);
+          sentLengths.push(sWords.length);
+          let htmlSent = escapeHtml(sent);
+          const lower = sent.toLowerCase();
+
+          // Check valid citations like [1] or (Author, 2023)
+          const hasBracketCite = /\[\d+\]|\([A-ZÀ-Ỹ][^)]*\d{4}[^)]*\)/.test(sent);
+          if (hasBracketCite) {
+            validCitationCount++;
+            htmlSent = htmlSent.replace(/(\[\d+\]|\([A-ZÀ-Ỹ][^)]*\d{4}[^)]*\))/g, '<span class="hl-good">$1</span>');
+          }
+
+          // Check AI Cliches
+          CLICHE_PHRASES.forEach(phrase => {
+            if (lower.includes(phrase)) {
+              clicheCount++;
+              const reg = new RegExp(`(${phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+              htmlSent = htmlSent.replace(reg, '<span class="hl-cliche" title="Cụm từ khuôn sáo kiểu dịch máy/AI">$1</span>');
+            }
+          });
+
+          // Check Uncited numbers/percentages or vague authority claims
+          const hasPercentOrStat = /\b\d+(?:[.,]\d+)?%|\b\d+\s*(?:sinh viên|người|trường hợp)\b/i.test(sent);
+          const hasVagueAuth = VAGUE_AUTHORITY.some(v => lower.includes(v));
+          if ((hasPercentOrStat || hasVagueAuth) && !hasBracketCite) {
+            uncitedCount++;
+            htmlSent = `<span class="hl-uncited" title="Có số liệu hoặc viện dẫn nghiên cứu nhưng chưa ghi nguồn trích dẫn cụ thể">${htmlSent}</span>`;
+            suggestions.push(`🔴 <strong>Câu ${idx + 1} thiếu nguồn trích dẫn:</strong> Có nêu số liệu hoặc cụm <em>"theo nhiều nghiên cứu / chuyên gia"</em> nhưng chưa gắn trích dẫn <code>[1]</code> hoặc <code>(Tác giả, Năm)</code>.`);
+          }
+
+          // Check overly long sentence (>42 words)
+          if (sWords.length > 42) {
+            longSentCount++;
+            htmlSent = `<span class="hl-long" title="Câu dài ${sWords.length} từ — Nên tách thành 2 câu ngắn">${htmlSent}</span>`;
+            suggestions.push(`🔵 <strong>Câu ${idx + 1} quá dài (${sWords.length} từ):</strong> Nên ngắt thành 2 câu dưới 30 từ để người đọc lướt nắm bắt luận điểm nhanh hơn.`);
+          }
+
+          return htmlSent;
+        });
+
+        if (clicheCount > 0) {
+          suggestions.unshift(`🟡 <strong>Phát hiện ${clicheCount} cụm từ chuyển ý khuôn sáo:</strong> Các cụm như <em>"Trong bối cảnh hiện nay"</em>, <em>"Không thể phủ nhận rằng"</em>, <em>"Tóm lại, có thể thấy rằng"</em> rất đặc trưng cho văn bản dịch/AI. Hãy đi thẳng vào chủ ngữ và số liệu cụ thể.`);
+        }
+        if (validCitationCount > 0) {
+          suggestions.push(`🟢 <strong>Điểm cộng:</strong> Phát hiện ${validCitationCount} câu có gắn ký hiệu trích dẫn học thuật rõ ràng.`);
+        }
+        if (suggestions.length === 0) {
+          suggestions.push(`🟢 <strong>Văn phong tốt:</strong> Độ dài câu hợp lý, không phát hiện cụm từ sáo rỗng hay số liệu trôi nổi thiếu nguồn.`);
+        }
+
+        // Compute naturalness score
+        const rawScore = Math.max(18, Math.min(98, 92 - clicheCount * 11 - uncitedCount * 15 - longSentCount * 9 + validCitationCount * 4));
+        document.getElementById('vn-score-natural').textContent = rawScore + '/100';
+        document.getElementById('vn-score-cliche').textContent = String(clicheCount);
+        document.getElementById('vn-score-uncited').textContent = String(uncitedCount);
+        document.getElementById('vn-score-long').textContent = String(longSentCount);
+
+        hlView.innerHTML = renderedSentences.join(' ');
+        sugList.innerHTML = suggestions.map(s => `<li class="p-2.5 rounded-lg border" style="background: var(--bg-secondary); border-color: var(--border-subtle);">${s}</li>`).join('');
+
+        // Update Tool 04 Signal Lab metrics as well
+        updateSignalLab(words, sentLengths, clicheCount, validCitationCount, uncitedCount);
+      }
+
+      function updateSignalLab(words, sentLengths, clicheCount, validCitationCount, uncitedCount) {
+        // 1. Burstiness (Standard Deviation / Mean of sentence lengths)
+        let burstPct = 55;
+        if (sentLengths.length >= 2) {
+          const mean = sentLengths.reduce((a, b) => a + b, 0) / sentLengths.length;
+          const variance = sentLengths.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / sentLengths.length;
+          const sd = Math.sqrt(variance);
+          burstPct = Math.min(96, Math.max(18, Math.round((sd / Math.max(1, mean)) * 165)));
+        }
+
+        // 2. Lexical Diversity (Unique lowercased words / total words)
+        const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[.,!?;:()"']/g, '')));
+        const ttrPct = Math.min(95, Math.max(25, Math.round((uniqueWords.size / Math.max(1, words.length)) * 115)));
+
+        // 3. Formulaic Connectives
+        const connPct = Math.min(95, Math.max(10, clicheCount * 22));
+
+        // 4. Evidence Anchoring
+        const evidPct = Math.min(96, Math.max(12, validCitationCount * 42 - uncitedCount * 15 + 30));
+
+        document.getElementById('sig-burst-val').textContent = burstPct + '%';
+        document.getElementById('sig-burst-bar').style.width = burstPct + '%';
+
+        document.getElementById('sig-ttr-val').textContent = ttrPct + '%';
+        document.getElementById('sig-ttr-bar').style.width = ttrPct + '%';
+
+        document.getElementById('sig-conn-val').textContent = connPct + '%';
+        document.getElementById('sig-conn-bar').style.width = connPct + '%';
+
+        document.getElementById('sig-evid-val').textContent = evidPct + '%';
+        document.getElementById('sig-evid-bar').style.width = evidPct + '%';
+
+        const summaryBox = document.getElementById('sig-summary-box');
+        if (connPct >= 44 || evidPct < 35) {
+          summaryBox.innerHTML = `
+            <div class="font-bold text-amber-400">🟡 Tín hiệu: Mang nhiều dấu ấn cấu trúc khuôn mẫu</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Đoạn văn hiện có mật độ cụm từ mở đầu khuôn sáo khá cao (${connPct}%) hoặc thiếu trích dẫn cụ thể (${evidPct}%). Hãy thay thế các nhận định chung chung bằng số liệu thực tế của nhóm và dẫn nguồn rõ ràng.</p>
+          `;
+        } else {
+          summaryBox.innerHTML = `
+            <div class="font-bold text-emerald-400">🟢 Tín hiệu: Nhịp điệu tự nhiên & Có căn cứ học thuật</div>
+            <p class="text-xs" style="color: var(--text-secondary);">Độ biến thiên câu (${burstPct}%), độ đa dạng từ vựng (${ttrPct}%) và mật độ dẫn chứng (${evidPct}%) cho thấy văn bản được biên tập có chủ đích và bám sát ngữ cảnh nghiên cứu.</p>
+          `;
+        }
+      }
+
+      document.querySelectorAll('[data-vn-sample]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-vn-sample');
+          document.getElementById('vn-input-text').value = VN_SAMPLES[key] || '';
+          analyzeVietnameseText();
+          showToast('Đã nạp văn bản mẫu và chạy phân tích!');
+        });
+      });
+
+      document.getElementById('btn-run-vn-scan').addEventListener('click', () => {
+        analyzeVietnameseText();
+        showToast('Đã cập nhật kết quả Soi Bài!');
+      });
+
+      document.getElementById('btn-clear-vn-scan').addEventListener('click', () => {
+        document.getElementById('vn-input-text').value = '';
+        analyzeVietnameseText();
+      });
+
+      document.getElementById('btn-refresh-signals').addEventListener('click', () => {
+        analyzeVietnameseText();
+        showToast('Đã đồng bộ chỉ số từ văn bản Soi Bài!');
+      });
+
+      // -----------------------------------------------------------------------
+      // 7. TOOL 05: PROMPT VAULT RENDERER
+      // -----------------------------------------------------------------------
+      function renderPromptVault(catFilter) {
+        const grid = document.getElementById('prompt-vault-grid');
+        const filtered = catFilter === 'all'
+          ? PROMPT_VAULT_ITEMS
+          : PROMPT_VAULT_ITEMS.filter(item => item.cat === catFilter);
+
+        grid.innerHTML = filtered.map(item => `
+          <div class="surface-card p-5 flex flex-col justify-between space-y-4">
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="font-mono-tech text-[11px] px-2.5 py-0.5 rounded policy-green">${escapeHtml(item.badge)}</span>
+              </div>
+              <h3 class="font-bold text-base">${escapeHtml(item.title)}</h3>
+              <div class="p-3 rounded-lg text-xs border" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25);">
+                <strong class="text-red-400">❌ Prompt yếu (Dễ làm hư thói quen tự học):</strong>
+                <div class="mt-0.5" style="color: var(--text-secondary);">"${escapeHtml(item.weak)}"</div>
+              </div>
+              <div class="p-3 rounded-lg text-xs border" style="background: var(--bg-input); border-color: var(--border-subtle);">
+                <strong class="text-emerald-400">✅ Prompt chuẩn AI Smart Campus:</strong>
+                <div class="mt-1 leading-relaxed">${escapeHtml(item.strong)}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <button type="button" data-copy-prompt="${escapeHtml(item.id)}" class="btn-primary px-3.5 py-1.5 text-xs">
+                📋 Sao chép Prompt Chuẩn
+              </button>
+              <button type="button" data-log-prompt="${escapeHtml(item.id)}" class="btn-secondary px-3 py-1.5 text-xs">
+                + Đưa vào Nhật ký
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        grid.querySelectorAll('[data-copy-prompt]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const p = PROMPT_VAULT_ITEMS.find(x => x.id === btn.getAttribute('data-copy-prompt'));
+            if (p) copyText(p.strong, 'Đã sao chép mẫu Prompt: ' + p.title);
+          });
+        });
+
+        grid.querySelectorAll('[data-log-prompt]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const p = PROMPT_VAULT_ITEMS.find(x => x.id === btn.getAttribute('data-log-prompt'));
+            if (!p) return;
+            document.getElementById('log-prompt').value = p.strong;
+            switchView('process-log');
+            showToast('Đã điền sẵn mẫu Prompt vào Nhật ký Minh bạch!');
+          });
+        });
+      }
+
+      document.querySelectorAll('[data-prompt-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-prompt-cat');
+          document.querySelectorAll('.prompt-cat-btn').forEach(b => {
+            b.className = 'prompt-cat-btn btn-secondary px-3.5 py-1.5 text-xs';
+          });
+          btn.className = 'prompt-cat-btn btn-primary px-3.5 py-1.5 text-xs';
+          renderPromptVault(cat);
+        });
+      });
+
+      // -----------------------------------------------------------------------
+      // 8. TOOL 06: 10 SCENARIOS CHECKER & PERSONA
+      // -----------------------------------------------------------------------
+      function renderScenarios() {
+        const container = document.getElementById('scenarios-list');
+        container.innerHTML = SCENARIOS.map(sc => {
+          const picked = scenarioChoices[sc.id];
+          const isCorrect = picked === sc.answer;
+          return `
+            <div class="surface-card p-5 space-y-3 flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono-tech text-xs font-bold" style="color: var(--accent-secondary);">CASE #${sc.id}</span>
+                  ${picked ? `<span class="font-mono-tech text-xs px-2 py-0.5 rounded ${isCorrect ? 'policy-green' : 'policy-red'}">${isCorrect ? '✓ CHÍNH XÁC' : '✗ CẦN XEM LẠI'}</span>` : ''}
+                </div>
+                <h3 class="font-bold text-sm sm:text-base">${escapeHtml(sc.title)}</h3>
+                <p class="text-xs sm:text-sm" style="color: var(--text-secondary);">${escapeHtml(sc.desc)}</p>
+              </div>
+              <div class="space-y-2 pt-2">
+                <div class="grid grid-cols-3 gap-2">
+                  <button type="button" data-sc-id="${sc.id}" data-sc-pick="green"
+                          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold policy-green ${picked === 'green' ? 'ring-2 ring-emerald-400' : 'opacity-80 hover:opacity-100'}">
+                    🟢 GREEN
+                  </button>
+                  <button type="button" data-sc-id="${sc.id}" data-sc-pick="yellow"
+                          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold policy-yellow ${picked === 'yellow' ? 'ring-2 ring-amber-400' : 'opacity-80 hover:opacity-100'}">
+                    🟡 YELLOW
+                  </button>
+                  <button type="button" data-sc-id="${sc.id}" data-sc-pick="red"
+                          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold policy-red ${picked === 'red' ? 'ring-2 ring-red-400' : 'opacity-80 hover:opacity-100'}">
+                    🔴 RED
+                  </button>
+                </div>
+                ${picked ? `<div class="p-3 rounded-lg text-xs border" style="background: var(--bg-input); border-color: var(--border-subtle);">${escapeHtml(sc.explain)}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.querySelectorAll('[data-sc-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = Number(btn.getAttribute('data-sc-id'));
+            const pick = btn.getAttribute('data-sc-pick');
+            scenarioChoices[id] = pick;
+            renderScenarios();
+            updatePersonaScore();
+          });
+        });
+      }
+
+      function updatePersonaScore() {
+        const answeredIds = Object.keys(scenarioChoices);
+        let correct = 0;
+        answeredIds.forEach(k => {
+          const sc = SCENARIOS.find(s => s.id === Number(k));
+          if (sc && scenarioChoices[k] === sc.answer) correct++;
+        });
+
+        const statScore = document.getElementById('stat-quiz-score');
+        if (statScore) statScore.textContent = `${correct}/10`;
+
+        const titleEl = document.getElementById('Persona-live-title');
+        const subEl = document.getElementById('Persona-live-sub');
+        subEl.textContent = `Đúng ${correct}/${answeredIds.length} tình huống đã chọn (Tổng 10)`;
+
+        if (answeredIds.length < 3) {
+          titleEl.textContent = 'Hãy chọn ít nhất 3 tình huống';
+        } else if (correct / answeredIds.length >= 0.8) {
+          titleEl.textContent = '🌟 Persona: Kiến Trúc Sư AI Có Trách Nhiệm (Verified AI Architect)';
+        } else if (correct / answeredIds.length >= 0.5) {
+          titleEl.textContent = '🧭 Persona: Người Đồng Hành Thận Trọng (Pragmatic Explorer)';
+        } else {
+          titleEl.textContent = '⚠️ Persona: Cần Củng Cố Ranh Giới Học Thuật';
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 9. INITIAL BOOTSTRAP
+      // -----------------------------------------------------------------------
+      try {
+        const savedTheme = localStorage.getItem('aisc_v2_theme');
+        if (savedTheme && THEME_LABELS[savedTheme]) {
+          setTheme(savedTheme);
+        } else {
+          setTheme('neural-glass');
+        }
+      } catch (e) {
+        setTheme('neural-glass');
+      }
+
+      renderDisclosure();
+      renderLogs();
+      document.getElementById('vn-input-text').value = VN_SAMPLES['ai-heavy'];
+      analyzeVietnameseText();
+      renderPromptVault('all');
+      renderScenarios();
+    })();
+  </script>
+</body>
+</html>

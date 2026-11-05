@@ -4,6 +4,19 @@
 
 [Mở website](https://ai-smart-campus-use-ai-wisely-2026.phanthienquang11234.chatgpt.site/)
 
+## Phiên bản v2.0 — Multi-Theme Design System & Nâng cấp UI/UX
+
+Bản v2.0 (`dist/ai_smart_campus_v2.html` / `ai_smart_campus_v2.html`) nâng cấp toàn diện giao diện và giải quyết 7 điểm nghẽn trải nghiệm sinh viên:
+- **4 AI Themes đổi màu tức thì:** `neural-glass` (Linear/OpenAI style), `verify-hud` (VeRA HUD kiểm chứng), `quantum-neon` (Google Gemini / Holo), `academic-light` (Claude / Notion Daylight).
+- **Sticky Navigation & Bento Hub:** Chuyển đổi 6 công cụ trong 1 cú click kèm huy hiệu đếm số mục nhật ký.
+- **Hệ thống Đèn giao thông (Green – Yellow – Red):** Làm rõ ranh giới sử dụng AI hợp lệ xuyên suốt cả 6 công cụ.
+- **Soi Bài Tiếng Việt 4 màu:** Tô sáng cụm từ sáo rỗng AI, nhận định thiếu nguồn, câu quá dài và trích dẫn chuẩn.
+- **Signal Lab (4 chỉ số Stylometric):** Bóc tách Burstiness, Lexical Diversity, Connectives và Evidence Anchoring kèm cảnh báo False Positive.
+- **Nhật ký & Xuất Phụ lục:** Lưu `localStorage`, xuất `.md`, Copy Bảng Markdown và xuất `.json`.
+- **Tủ Prompt Tự Học:** Cặp đối chiếu ❌ Prompt yếu vs. ✅ Prompt chuẩn kèm nút đưa thẳng vào Nhật ký.
+
+Truy cập: mở `dist/ai_smart_campus_v2.html` hoặc chạy `python -m http.server 4173 --directory dist` và vào <http://localhost:4173/ai_smart_campus_v2.html>.
+
 ## Công cụ
 
 - **Khai báo AI:** tạo bản khai báo từ công cụ, khâu hỗ trợ và các bước tự kiểm tra đã chọn.
