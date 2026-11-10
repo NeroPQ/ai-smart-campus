@@ -1,0 +1,142 @@
+/* Color-only palettes for the existing main-site layout. Surfaces remain light. */
+:root {
+  color-scheme: light;
+  --primary: #5b3ee0;
+  --primary-dark: #4b33b7;
+  --primary-soft: #f1edff;
+  --green: #5b3ee0;
+  --green-deep: #4b33b7;
+  --mint: #f1edff;
+  --coral: #5b3ee0;
+  --lavender: #f1edff;
+}
+
+:root[data-main-theme="ocean"] {
+  --primary: #005f86;
+  --primary-dark: #004b6b;
+  --primary-soft: #e8f5fa;
+  --green: #005f86;
+  --green-deep: #004b6b;
+  --mint: #e8f5fa;
+  --coral: #005f86;
+  --lavender: #e8f5fa;
+}
+
+:root[data-main-theme="forest"] {
+  --primary: #255f38;
+  --primary-dark: #1d4c2d;
+  --primary-soft: #edf6ef;
+  --green: #255f38;
+  --green-deep: #1d4c2d;
+  --mint: #edf6ef;
+  --coral: #255f38;
+  --lavender: #edf6ef;
+}
+
+:root[data-main-theme="ember"] {
+  --primary: #a13826;
+  --primary-dark: #812d20;
+  --primary-soft: #fff0ec;
+  --green: #a13826;
+  --green-deep: #812d20;
+  --mint: #fff0ec;
+  --coral: #a13826;
+  --lavender: #fff0ec;
+}
+
+/* Keep the original Campus appearance; color the embedded tools for other palettes. */
+:root:not([data-main-theme="campus"]) #toolkit-process-log {
+  --apl-purple: var(--primary);
+  --apl-purple-dark: var(--primary-dark);
+  --apl-soft: var(--primary-soft);
+}
+:root:not([data-main-theme="campus"]) .sc-tool {
+  --sc-accent: var(--primary);
+  --sc-accent-ink: var(--primary-dark);
+}
+
+.theme-picker {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.theme-picker > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.theme-picker > summary::-webkit-details-marker { display: none; }
+.theme-picker > summary::marker { content: ""; }
+.theme-picker > summary:hover,
+.theme-picker[open] > summary { border-color: var(--primary); background: var(--primary-soft); }
+.theme-picker-icon { color: var(--primary-dark); font-size: 18px; line-height: 1; }
+
+.theme-picker-panel {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  gap: 4px;
+  width: 184px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 0 12px 32px rgba(20, 20, 20, .14);
+}
+
+.theme-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+
+.theme-choice:hover,
+.theme-choice[aria-pressed="true"] { border-color: var(--primary-soft); background: var(--primary-soft); }
+.theme-choice[aria-pressed="true"] { color: var(--primary-dark); font-weight: 700; }
+.theme-swatch { width: 14px; height: 14px; flex: 0 0 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.swatch-campus { background: #5b3ee0; }
+.swatch-ocean { background: #005f86; }
+.swatch-forest { background: #255f38; }
+.swatch-ember { background: #a13826; }
+
+.theme-picker :focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.toolkit-shortcuts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.toolkit-shortcuts a:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
+
+@media (max-width: 1100px) {
+  .toolkit-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .toolkit-shortcuts { grid-template-columns: 1fr; }
+  .theme-picker > summary { width: 44px; min-width: 44px; padding: 0; }
+  .theme-picker-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+}

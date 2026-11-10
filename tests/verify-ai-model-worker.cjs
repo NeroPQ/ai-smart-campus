@@ -3,9 +3,9 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const worker = require("../dist/ai-model-worker.js");
+const worker = require("../public/ai-model-worker.js");
 
-const source = fs.readFileSync(path.join(__dirname, "../dist/ai-model-worker.js"), "utf8");
+const source = fs.readFileSync(path.join(__dirname, "../public/ai-model-worker.js"), "utf8");
 assert.equal(worker.MODEL_ID, "mujian2026/multilingual-ai-text-detector");
 assert.equal(worker.MODEL_REVISION, "60be618d23e169de6fe04b8e6135be7d8976abb7");
 assert.equal(worker.RUNTIME_URL, "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js", "use the browser bundle; the .web entry contains bare imports unsupported by a native Worker");

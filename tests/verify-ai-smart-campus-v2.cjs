@@ -3,7 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const htmlPath = path.join(__dirname, "..", "dist", "ai_smart_campus_v2.html");
+const htmlPath = path.join(__dirname, "..", "public", "ai_smart_campus_v2.html");
 assert.ok(fs.existsSync(htmlPath), "ai_smart_campus_v2.html should exist in dist/");
 
 const html = fs.readFileSync(htmlPath, "utf8");

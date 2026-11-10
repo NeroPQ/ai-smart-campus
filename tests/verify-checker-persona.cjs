@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { getCard } = require('../dist/checker-persona.js');
+const { getCard } = require('../public/checker-persona.js');
 for (const score of [0, 4]) assert.equal(getCard(score).kind, 'sleepwalker');
 for (const score of [5, 7]) assert.equal(getCard(score).kind, 'sprinter');
 for (const score of [8, 10]) assert.equal(getCard(score).kind, 'architect');

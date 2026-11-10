@@ -3,7 +3,7 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const writing = require("../dist/writing-signals.js");
+const writing = require("../public/writing-signals.js");
 
 function findingsOf(result, id) { return result.findings.filter((finding) => finding.id === id); }
 
@@ -255,7 +255,7 @@ assert.equal(writing.MAX_TEXT_LENGTH, 100000);
 }
 
 {
-  const source = fs.readFileSync(path.join(__dirname, "../dist/writing-signals.js"), "utf8");
+  const source = fs.readFileSync(path.join(__dirname, "../public/writing-signals.js"), "utf8");
   assert.doesNotMatch(source, /\b(?:fetch|XMLHttpRequest|WebSocket)\s*\(/u);
   assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage|indexedDB)\b/u);
 }

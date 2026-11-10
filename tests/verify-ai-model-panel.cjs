@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const panelApi = require("../dist/ai-model-panel.js");
+const panelApi = require("../public/ai-model-panel.js");
 class Element {
   constructor(tag) { this.tagName = tag; this.children = []; this.events = {}; this.value = ""; this.attrs = {}; }
   set textContent(value) { this.children = []; this.text = String(value); }
@@ -54,6 +54,6 @@ clear.fire();
 assert.equal(workers[2].terminated, true);
 assert.equal(ui.output.children.length, 0);
 assert.match(ui.status.textContent, /Đã xóa/);
-const source = fs.readFileSync(require.resolve("../dist/ai-model-panel.js"), "utf8");
+const source = fs.readFileSync(require.resolve("../public/ai-model-panel.js"), "utf8");
 assert.doesNotMatch(source, /innerHTML|\bfetch\s*\(|localStorage|sessionStorage/);
 console.log("Model panel validation, lazy loading, stale results, cancellation, safe rendering and retry checks passed.");

@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
-const root = path.join(__dirname, '..', 'dist');
+const root = path.join(__dirname, '..', 'public');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.doesNotMatch(html, /assessment\.(js|css)|feedback\.js|learning-evaluation|feedback-form|data-quiz|lesson-card/);
 for (const asset of ['assessment.js', 'assessment.css', 'feedback.js']) assert.equal(fs.existsSync(path.join(root, asset)), false);
@@ -40,7 +40,7 @@ const card=new Element('article');card.className='scenario-card';find('checker')
 for(const id of ['scenario-step','scenario-category','scenario-title','scenario-prompt','answer-options','scenario-result','scenario-prev','scenario-next','scenario-feedback','scenario-progress-fill','scenario-percent']) card.append(new Element('div',id));
 const document={getElementById:find,createElement:tag=>new Element(tag),createTextNode:text=>{const n=new Element('#text');n.textContent=text;return n;},querySelector:s=>nodes.find(n=>n.matches(s)),querySelectorAll:s=>nodes.filter(n=>n.matches(s)),addEventListener(){}};
 const handlers={};
-const window={location:{hash:'#toolkit-prompts'},AISmartCampusPersona:require('../dist/checker-persona.js'),addEventListener:(k,fn)=>handlers[k]=fn,scrollTo(){},matchMedia:()=>({matches:true})};
+const window={location:{hash:'#toolkit-prompts'},AISmartCampusPersona:require('../public/checker-persona.js'),addEventListener:(k,fn)=>handlers[k]=fn,scrollTo(){},matchMedia:()=>({matches:true})};
 vm.runInNewContext(fs.readFileSync(path.join(root,'app.js'),'utf8'),{document,window,requestAnimationFrame:fn=>fn()});
 function route(hash,expected) {window.location.hash=hash;handlers.hashchange();assert.deepEqual(nodes.filter(n=>n.dataset.screen!==undefined&&!n.hidden).map(n=>n.id),[expected]);assert.equal(nav.children.find(n=>n.dataset.nav===expected).attributes['aria-current'],'page');}
 route('#toolkit-prompts','prompts');route('#toolkit-disclosure','disclosure');route('#toolkit-scanner','scanner');route('#toolkit-survival','scanner');route('#survival','scanner');route('#checker','checker');route('#learn','prompts');route('#guideline','disclosure');route('#about','home');route('#%broken','home');

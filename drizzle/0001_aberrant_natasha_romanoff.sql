@@ -1,0 +1,1 @@
+ALTER TABLE `evaluation_attempts` ADD `version` integer DEFAULT 0 NOT NULL;

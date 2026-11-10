@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const toolkit = require("../dist/student-toolkit.js");
+const toolkit = require("../public/student-toolkit.js");
 
 class FakeElement {
   constructor(tagName = "div") {
@@ -122,12 +122,34 @@ assert.match(literalUserText, /<img src=x onerror=alert\(1\)>/);
 
   const prompts = walk(doc.hosts.get("toolkit-prompts")).filter((node) => node.className === "stk-toolkit-prompt-card");
   assert.equal(prompts.length, 6);
-  assert.equal(walk(doc.hosts.get("toolkit-prompts")).filter((node) => node.tagName === "DETAILS").length, 6);
+  assert.equal(walk(doc.hosts.get("toolkit-prompts")).filter((node) => node.tagName === "DETAILS").length, 18,
+    "each card has a challenge, a nested answer, and its full copyable prompt");
   assert.equal(toolkit.PROMPTS[0].title, "Giảng viên phản biện khó tính");
+  assert.equal(toolkit.PROMPT_CATEGORIES.length, 4);
+  assert.ok(prompts.every((card) => card.hidden === undefined || card.hidden === false), "all six prompts are visible initially");
+  const promptTree = walk(doc.hosts.get("toolkit-prompts"));
+  const promptFilterGroup = promptTree.find((node) => node.attributes.role === "group" && node.attributes["aria-label"] === "Lọc prompt theo nhu cầu");
+  assert.ok(promptFilterGroup, "category controls have an accessible group name");
+  const programmingFilter = promptTree.find((node) => node.tagName === "BUTTON" && node.textContent === "Lập trình (1)");
+  programmingFilter.handlers.click();
+  assert.equal(programmingFilter.attributes["aria-pressed"], "true");
+  assert.deepEqual(prompts.filter((card) => !card.hidden).map((card) => card.dataset.category), ["programming"]);
+  assert.equal(promptTree.find((node) => node.attributes["aria-live"] === "polite").textContent, "Đang hiển thị 1 trên 6 mẫu.");
+  const allFilter = promptTree.find((node) => node.tagName === "BUTTON" && node.textContent === "Tất cả mẫu (6)");
+  allFilter.handlers.click();
+  assert.ok(prompts.every((card) => !card.hidden), "the all filter restores every prompt");
+  const challenge = promptTree.find((node) => node.tagName === "DETAILS" && node.children[0].textContent === "Thử nâng cấp: câu này còn thiếu gì?");
+  assert.ok(challenge, "each prompt includes an optional refinement challenge");
+  assert.equal(challenge.attributes.open, undefined, "challenge starts collapsed");
+  assert.ok(challenge.children.some((node) => node.tagName === "DETAILS" && node.children[0].textContent === "Xem một cách nâng cấp"));
+  const promptCopy = promptTree.find((node) => node.tagName === "BUTTON" && node.textContent === "Sao chép prompt");
+  await promptCopy.handlers.click();
+  assert.equal(promptTree.find((node) => node.className === "stk-toolkit-status" && node.textContent === "Đã sao chép.").textContent, "Đã sao chép.");
   console.log("PASS disclosure is blank by default and includes only selected statements");
   console.log("PASS English output is not mislabeled as an APA citation");
   console.log("PASS clipboard failure returns false and mount is idempotent");
   console.log("PASS all declaration choices start unchecked and require tool plus task before copy");
-  console.log("PASS six study prompts render; static user content is inserted as text");
+  console.log("PASS six study prompts render with accessible category filters and collapsed refinement challenges");
+  console.log("PASS prompt copy feedback remains available after filtering");
   console.log("PASS language buttons, selected state, accessible preview heading, reset and collapsed prompt details");
 })().catch((error) => { console.error(error); process.exitCode = 1; });

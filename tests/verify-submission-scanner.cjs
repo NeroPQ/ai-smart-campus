@@ -3,7 +3,7 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const scanner = require("../dist/submission-scanner.js");
+const scanner = require("../public/submission-scanner.js");
 
 class FakeText {
   constructor(value) { this.nodeType = 3; this.text = String(value); this.parentNode = null; }
@@ -218,10 +218,10 @@ assert.equal(scanner.MAX_TEXT_LENGTH, 100000);
 }
 
 {
-  const source = fs.readFileSync(path.join(__dirname, "../dist/submission-scanner.js"), "utf8");
+  const source = fs.readFileSync(path.join(__dirname, "../public/submission-scanner.js"), "utf8");
   assert.doesNotMatch(source, /\binnerHTML\b/);
   assert.doesNotMatch(source, /\blocalStorage\b|\bsessionStorage\b|\bfetch\s*\(/);
-  const styles = fs.readFileSync(path.join(__dirname, "../dist/submission-scanner.css"), "utf8");
+  const styles = fs.readFileSync(path.join(__dirname, "../public/submission-scanner.css"), "utf8");
   assert.match(styles, /\.sc-results\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.7fr\)\s+minmax\(250px,\s*1fr\)/s);
   assert.match(styles, /@media\s*\(max-width:\s*620px\)[\s\S]*?\.sc-results\s*\{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
 }

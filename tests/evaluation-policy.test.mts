@@ -1,0 +1,16 @@
+import { strict as assert } from 'node:assert';
+import { participantKey, isAuthorizedAdmin, scoreAnswers, csvCell, hashAccessToken } from '../lib/evaluation-policy.ts';
+assert.deepEqual(participantKey(' qa001 ', true), { id: 'QA001', key: 'qa:QA001' });
+assert.equal(participantKey('QA001', false), null);
+assert.equal(participantKey('ASC001', true), null);
+assert.equal(participantKey('name@example.com', false), null);
+assert.equal(isAuthorizedAdmin('OTHER@example.com', 'admin@example.com'), false);
+assert.equal(isAuthorizedAdmin(null, 'admin@example.com'), false);
+assert.equal(isAuthorizedAdmin('ADMIN@example.com', 'admin@example.com'), true);
+assert.equal(scoreAnswers([1,2,0,2,1], [1,2,0,2,1]), 5);
+assert.equal(scoreAnswers([1,2,0,2], [1,2,0,2,1]), null);
+assert.equal(scoreAnswers([1,2,0,2,5], [1,2,0,2,1]), null);
+assert.equal(csvCell('=2+2'), `"'=2+2"`);
+assert.equal(csvCell('a,"b"'), '"a,""b"""');
+assert.notEqual(await hashAccessToken('one'), await hashAccessToken('two'));
+console.log('PASS QA isolation, ID validation, admin allowlist, scoring and CSV escaping');

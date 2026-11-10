@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const processLog = require("../dist/process-log.js");
+const processLog = require("../public/process-log.js");
 
 class FakeElement {
   constructor(tagName = "div") {
@@ -124,12 +124,24 @@ const storage = makeStorage();
 assert.equal(processLog.mount(doc, null, storage, runtime), true);
 assert.equal(processLog.mount(doc, null, storage, runtime), false, "mount is idempotent");
 assert.ok(walk(doc.host).some((node) => node.tagName === "H2" && node.textContent === "Nhật Ký Minh Bạch AI"));
+assert.equal(getButton(doc.host, "Xuất nhật ký Legacy V2 (JSON)"), undefined, "no legacy export is shown without the old key");
 
 const nameInput = getById(doc.host, "apl-course-name");
+assert.equal(getButton(doc.host, "Xuất JSON môn đang chọn").disabled, true, "JSON export is disabled until a course is selected");
 nameInput.value = "  Ca\u0301ch ho\u0323c  ";
 getButton(doc.host, "Thêm hoặc mở môn học").click();
 assert.equal(getById(doc.host, "apl-course-select").value, "Cách học");
 assert.equal(storage.writes, 1);
+getButton(doc.host, "Xuất JSON môn đang chọn").click();
+assert.equal(runtime.URL.created.length, 1);
+assert.equal(runtime.URL.created[0].options.type, "application/json;charset=utf-8");
+const uiJsonExport = JSON.parse(runtime.URL.created[0].text);
+assert.deepEqual(Object.keys(uiJsonExport).sort(), ["courses", "version"]);
+assert.equal(uiJsonExport.version, processLog.VERSION);
+assert.equal(uiJsonExport.courses.length, 1);
+assert.equal(uiJsonExport.courses[0].name, "Cách học");
+assert.equal(processLog.parseStoredData(JSON.stringify(uiJsonExport)).ok, true, "the download uses the existing versioned storage shape");
+assert.match(walk(doc.host).map((node) => node.textContent).join(" "), /tệp JSON từ nhật ký môn học đang chọn/);
 const firstIdea = getById(doc.host, "apl-field-originalIdea");
 firstIdea.value = "Ý tưởng gốc cho môn đầu";
 firstIdea.handlers.input();
@@ -140,12 +152,46 @@ getButton(doc.host, "Thêm hoặc mở môn học").click();
 getById(doc.host, "apl-field-mainPrompts").value = "Prompt của môn thứ hai";
 getById(doc.host, "apl-field-mainPrompts").handlers.input();
 assert.equal(storage.writes, 4);
+getButton(doc.host, "Xuất JSON môn đang chọn").click();
+const selectedCourseJson = JSON.parse(runtime.URL.created[1].text);
+assert.equal(selectedCourseJson.courses.length, 1, "the UI export excludes other saved courses");
+assert.equal(selectedCourseJson.courses[0].name, "môn A");
+assert.equal(selectedCourseJson.courses[0].mainPrompts, "Prompt của môn thứ hai");
 getById(doc.host, "apl-course-select").value = "Cách học";
 getById(doc.host, "apl-course-select").handlers.change();
 assert.equal(getById(doc.host, "apl-field-originalIdea").value, "Ý tưởng gốc cho môn đầu", "switching subjects preserves the first draft");
 getById(doc.host, "apl-course-select").value = "môn A";
 getById(doc.host, "apl-course-select").handlers.change();
 assert.equal(getById(doc.host, "apl-field-mainPrompts").value, "Prompt của môn thứ hai", "each subject keeps separate entries");
+
+const legacyRaw = ' [ { "prompt": "<img src=x onerror=alert(1)>", "source": "legacy sample" } ] ';
+const legacyStorage = makeStorage();
+legacyStorage.values.set("aisc_v2_logs", legacyRaw);
+const legacyRuntime = makeRuntime();
+const legacyDoc = makeDocument(legacyRuntime);
+processLog.mount(legacyDoc, null, legacyStorage, legacyRuntime);
+const legacyPanel = walk(legacyDoc.host).find((node) => node.attributes["aria-label"] === "Xuất nhật ký Legacy V2");
+assert.ok(legacyPanel, "the legacy export is shown only when the old key exists");
+assert.match(legacyPanel.children.map((node) => node.textContent).join(" "), /có thể chứa mục mẫu/);
+assert.doesNotMatch(walk(legacyPanel).map((node) => node.textContent).join(" "), /<img/,
+  "untrusted old journal contents are never inserted into the page");
+assert.equal(legacyStorage.writes, 0, "opening the export control does not alter local storage");
+getButton(legacyDoc.host, "Xuất nhật ký Legacy V2 (JSON)").click();
+assert.equal(legacyRuntime.URL.created[0].text, legacyRaw, "legacy export preserves the exact stored string");
+assert.equal(legacyRuntime.URL.created[0].options.type, "application/json;charset=utf-8");
+assert.equal(legacyStorage.getItem("aisc_v2_logs"), legacyRaw,
+  "export leaves the legacy key and value untouched");
+assert.match(walk(legacyPanel).map((node) => node.textContent).join(" "), /dữ liệu gốc trên thiết bị vẫn được giữ nguyên/);
+
+const invalidLegacyStorage = makeStorage();
+invalidLegacyStorage.values.set("aisc_v2_logs", "not-json <img>");
+const invalidLegacyDoc = makeDocument(makeRuntime());
+processLog.mount(invalidLegacyDoc, null, invalidLegacyStorage, invalidLegacyDoc.defaultView);
+assert.equal(getButton(invalidLegacyDoc.host, "Xuất nhật ký Legacy V2 (JSON)"), undefined,
+  "malformed legacy content is not offered as a JSON download");
+assert.match(walk(invalidLegacyDoc.host).map((node) => node.textContent).join(" "), /không phải JSON array hợp lệ/);
+assert.equal(invalidLegacyStorage.getItem("aisc_v2_logs"), "not-json <img>",
+  "malformed legacy data is also left untouched");
 
 nameInput.value = " MÔN A ";
 getButton(doc.host, "Thêm hoặc mở môn học").click();
@@ -182,7 +228,7 @@ getButton(noPrintDoc.host, "Thêm hoặc mở môn học").click();
 getButton(noPrintDoc.host, "Bản in / Lưu PDF").click();
 assert.equal(noPrintDoc.body.classList.contains("apl-process-log-printing"), false, "missing print support never enables the temporary mode");
 
-const processLogCss = fs.readFileSync(require.resolve("../dist/process-log.css"), "utf8");
+const processLogCss = fs.readFileSync(require.resolve("../public/process-log.css"), "utf8");
 const printCss = processLogCss.slice(processLogCss.indexOf("@media print"));
 assert.match(printCss, /body\.apl-process-log-printing > #main/);
 assert.match(printCss, /body\.apl-process-log-printing #toolkit-process-log \.apl-print-appendix/);

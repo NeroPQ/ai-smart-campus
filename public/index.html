@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="vi" data-main-theme="campus">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#efefef">
+  <meta name="description" content="Student Toolkit: khai báo và nhật ký AI, prompt tự học, rà văn bản và trích dẫn trước khi nộp, thực hành 10 tình huống dùng AI.">
+  <title>AI Smart Campus — Student Toolkit</title>
+  <link rel="icon" type="image/png" href="assets/ai-smart-campus-logo-v2.png">
+  <link rel="apple-touch-icon" href="assets/ai-smart-campus-logo-v2.png">
+  <link rel="stylesheet" href="nucleus-fonts.css?v=20261029-nucleus">
+  <link rel="stylesheet" href="styles.css?v=20261028-tools-only">
+  <link rel="stylesheet" href="readability.css?v=20261028-tools-only">
+  <link rel="stylesheet" href="student-toolkit.css?v=20261028-tools-only">
+  <link rel="stylesheet" href="ui-refresh.css?v=20261029-tools-v2">
+  <link rel="stylesheet" href="submission-scanner.css?v=20261030-model-v5">
+  <link rel="stylesheet" href="process-log.css?v=20261029-tools-v2">
+  <link rel="stylesheet" href="main-themes.css?v=20261110-main-tools">
+  <script src="main-themes.js?v=20261110-main-tools" defer></script>
+  <script src="student-toolkit.js?v=20261110-toolkit-v3" defer></script>
+  <script src="writing-signals.js?v=20261030-writing-v3" defer></script>
+  <script src="ai-model-panel.js?v=20261030-model-v5" defer></script>
+  <script src="submission-scanner.js?v=20261030-model-v5" defer></script>
+  <script src="process-log.js?v=20261110-process-log-v3" defer></script>
+  <script src="checker-persona.js?v=20261028-tools-only" defer></script>
+  <script src="app.js?v=20261110-main-tools" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="AI Smart Campus, về trang chủ">
+      <img class="brand-logo" src="assets/ai-smart-campus-logo-v2.png" alt="" width="48" height="48" decoding="async">
+      <span class="brand-name">AI <strong>Smart Campus</strong></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Mở điều hướng"><span></span><span></span></button>
+    <nav class="site-nav" id="site-nav" aria-label="Điều hướng chính">
+      <a href="#home" data-nav="home">Công cụ</a>
+      <a href="#toolkit-disclosure" data-nav="disclosure">Khai báo &amp; nhật ký</a>
+      <a href="#toolkit-prompts" data-nav="prompts">Tủ prompt</a>
+      <a href="#toolkit-scanner" data-nav="scanner">Soi bài</a>
+      <a href="#checker" data-nav="checker">Checker &amp; Persona</a>
+    </nav>
+    <a class="header-cta" href="/evaluate">Pre-test / Post-test <span aria-hidden="true">↗</span></a>
+    <details class="theme-picker">
+      <summary><span class="theme-picker-icon" aria-hidden="true">◐</span><span class="theme-picker-label">Giao diện</span></summary>
+      <div class="theme-picker-panel" role="group" aria-label="Chọn bảng màu">
+        <button class="theme-choice" type="button" data-theme-choice="campus" aria-label="Màu Campus" aria-pressed="true"><span class="theme-swatch swatch-campus" aria-hidden="true"></span><span>Campus</span></button>
+        <button class="theme-choice" type="button" data-theme-choice="ocean" aria-label="Màu Ocean" aria-pressed="false"><span class="theme-swatch swatch-ocean" aria-hidden="true"></span><span>Ocean</span></button>
+        <button class="theme-choice" type="button" data-theme-choice="forest" aria-label="Màu Forest" aria-pressed="false"><span class="theme-swatch swatch-forest" aria-hidden="true"></span><span>Forest</span></button>
+        <button class="theme-choice" type="button" data-theme-choice="ember" aria-label="Màu Ember" aria-pressed="false"><span class="theme-swatch swatch-ember" aria-hidden="true"></span><span>Ember</span></button>
+        <span class="visually-hidden" id="theme-status" aria-live="polite">Giao diện Campus</span>
+      </div>
+    </details>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="screen screen-home" id="home" data-screen aria-labelledby="home-title">
+      <div class="home-hero content-width">
+        <div class="hero-copy">
+          <p class="eyebrow">AI SMART CAMPUS · STUDENT TOOLKIT</p>
+          <h1 id="home-title">Use AI.<br><span>Don’t let AI use you.</span></h1>
+          <p class="hero-intro">Ghi lại quá trình dùng AI, lấy prompt để tự học, soi văn bản trước khi nộp và thử cách xử lý tình huống. Chọn công cụ bạn đang cần.</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="/evaluate">Làm Pre-test / Post-test ↗</a>
+            <a class="button button-dark" href="#toolkit-disclosure">Tạo khai báo AI <span aria-hidden="true">↗</span></a>
+            <a class="button button-quiet" href="#toolkit-prompts">Lấy prompt học tập <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-footnote"><span class="footnote-icon" aria-hidden="true">i</span><p>Kiểm tra quy định môn học trước khi dùng AI cho bài được chấm điểm.</p></div>
+        </div>
+      </div>
+      <div class="content-width nucleus-metrics" aria-label="Có gì trong bộ công cụ">
+        <div><strong>06</strong><span>Công cụ thiết thực</span><p>Sáu lối tắt rõ ràng cho minh bạch, tự học và kiểm tra bài.</p></div>
+        <div><strong>06</strong><span>Mẫu prompt tự học</span><p>Gợi mở để bạn tự suy nghĩ và kiểm tra.</p></div>
+        <div><strong>10</strong><span>Tình huống thực hành</span><p>Thử lựa chọn, đọc phản hồi và nhận Persona.</p></div>
+      </div>
+      <div class="content-width home-cards">
+        <div class="section-heading"><div><p class="eyebrow">SÁU CÔNG CỤ TRONG CÙNG MỘT WEBSITE</p><h2>Bài này bạn đang cần gì?</h2></div><p class="section-aside">Không cần tài khoản. Nội dung bạn nhập vào công cụ không tự gửi về nhóm.</p></div>
+        <nav class="toolkit-shortcuts" aria-label="Sáu công cụ học tập">
+          <a href="#toolkit-disclosure"><span>01 / MINH BẠCH AI</span><strong>Tạo câu khai báo AI</strong><small>Chọn công cụ, khâu hỗ trợ và bước kiểm chứng để tạo lời khai báo phù hợp.</small><b aria-hidden="true">↗</b></a>
+          <a href="#toolkit-process-log"><span>02 / LƯU QUÁ TRÌNH</span><strong>Nhật ký dùng AI</strong><small>Ghi prompt, tóm tắt gợi ý và việc bạn tự kiểm chứng; xuất phụ lục khi cần.</small><b aria-hidden="true">↗</b></a>
+          <a href="#toolkit-prompts"><span>03 / TỰ HỌC</span><strong>Tủ prompt học tập</strong><small>Sáu mẫu gợi mở cho viết, code, tìm nguồn và thuyết trình — không làm bài hộ.</small><b aria-hidden="true">↗</b></a>
+          <a href="#toolkit-scanner"><span>04 / RÀ BÀI NHANH</span><strong>Soi bài trước khi nộp</strong><small>Rà mẫu diễn đạt, định dạng, câu lặp và trích dẫn; đọc giải thích cho từng dấu hiệu.</small><b aria-hidden="true">↗</b></a>
+          <a href="#sc-model-title"><span>05 / MÔ HÌNH THỬ NGHIỆM</span><strong>Thử phân tích trên máy</strong><small>Mô hình chỉ là phép thử, có thể nhầm và không chứng minh ai đã viết văn bản.</small><b aria-hidden="true">↗</b></a>
+          <a href="#checker"><span>06 / THỰC HÀNH TÌNH HUỐNG</span><strong>Bạn sẽ dùng AI thế nào?</strong><small>Thử 10 tình huống, xem lý do và bước tiếp theo. “Appropriate” không có nghĩa là được phê duyệt.</small><b aria-hidden="true">↗</b></a>
+        </nav>
+      </div>
+    </section>
+    <section class="screen" id="disclosure" data-screen aria-labelledby="stk-disclosure-title" hidden>
+      <div class="content-width tool-page"><a class="tool-back-link" href="#home">← Tất cả công cụ</a><div id="toolkit-disclosure"></div><div id="toolkit-process-log"></div></div>
+    </section>
+    <section class="screen" id="prompts" data-screen aria-labelledby="stk-prompts-title" hidden>
+      <div class="content-width tool-page"><a class="tool-back-link" href="#home">← Tất cả công cụ</a><div id="toolkit-prompts"></div></div>
+    </section>
+    <section class="screen" id="scanner" data-screen aria-labelledby="scanner-title" hidden>
+      <div class="content-width tool-page"><a class="tool-back-link" href="#home">← Tất cả công cụ</a><div id="toolkit-scanner"></div></div>
+    </section>
+    <section class="screen" id="checker" data-screen aria-labelledby="checker-title" hidden>
+      <div class="content-width checker-page">
+        <a class="tool-back-link checker-back-link" href="#home">← Tất cả công cụ</a>
+        <div class="page-hero checker-hero">
+          <div><p class="eyebrow"><span class="eyebrow-dot"></span> CÔNG CỤ 06 · CHECKER &amp; PERSONA</p><h1 id="checker-title">Bạn sẽ<br><span>dùng AI thế nào?</span></h1><p>Thử 10 tình huống, xem phản hồi và nhận thẻ Persona cho lượt thực hành của bạn.</p></div>
+          <div class="checker-side-note"><span class="checker-count">10</span><span>tình huống<br>đời sống đại học</span></div>
+        </div>
+        <div class="checker-caveat"><span aria-hidden="true">ⓘ</span><p>Đánh giá cách dùng AI, <strong>không xác nhận được phép</strong>. Luôn theo quy định trường, học phần và từng bài đánh giá.</p></div>
+        <details class="checker-legend"><summary>Hiểu ba mức đánh giá</summary><dl><dt>Appropriate</dt><dd>Phù hợp nguyên tắc học có trách nhiệm; vẫn cần tuân thủ quy định môn học.</dd><dt>Risky</dt><dd>Có rủi ro hoặc phụ thuộc yêu cầu giảng viên; cần kiểm tra trước.</dd><dt>Not Recommended</dt><dd>Không nên thực hiện vì nguy cơ gian lận, đạo văn, phụ thuộc hoặc gây hại.</dd></dl><p>Khai báo AI không thay thế quyền sử dụng. Một cách dùng có thể được phép ở bài này nhưng bị cấm ở bài khác.</p></details>
+        <div class="scenario-shell">
+          <div class="scenario-progress"><span id="scenario-step">Tình huống 01 / 10</span><div class="progress-track" aria-hidden="true"><span id="scenario-progress-fill"></span></div><span id="scenario-percent">10%</span></div>
+          <article class="scenario-card">
+            <span class="scenario-category" id="scenario-category">BÀI TẬP &amp; Ý TƯỞNG</span>
+            <h2 id="scenario-title"></h2>
+            <p class="scenario-prompt" id="scenario-prompt"></p>
+            <p class="choice-label" id="choice-label">Bạn sẽ làm gì?</p>
+            <div class="answer-options" id="answer-options" role="group" aria-labelledby="choice-label"></div>
+            <div class="scenario-result" id="scenario-result" role="status" aria-live="polite" hidden></div>
+            <div class="scenario-controls"><button class="button button-quiet" id="scenario-prev" type="button">← Trước</button><span id="scenario-feedback" class="scenario-feedback" aria-live="polite">Chọn một phương án để tiếp tục.</span><button class="button button-dark" id="scenario-next" type="button" disabled>Tiếp theo <span aria-hidden="true">→</span></button></div>
+          </article>
+        </div>
+        <p class="checker-footnote">Các ví dụ mang tính giáo dục. Khi có xung đột, quy định chính thức của môn học và trường được ưu tiên.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="content-width footer-inner"><a class="footer-brand" href="#home">AI Smart Campus <span>— Use AI, Don’t Let AI Use You</span></a><span>Student Toolkit · Công cụ cho việc học chủ động</span><a href="#home">Chọn công cụ ↗</a></div></footer>
+</body>
+</html>
