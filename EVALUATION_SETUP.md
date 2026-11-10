@@ -4,6 +4,8 @@ Website phục vụ các công cụ hiện có từ `public/`, còn `/evaluate` 
 
 Lượt đánh giá được lưu trong D1. Mã tham gia là biệt danh và mỗi lượt có mã truy cập ngẫu nhiên riêng; mất mã truy cập có thể khiến người tham gia không tiếp tục được trên thiết bị khác. Không yêu cầu tên, email hay mã sinh viên. Tiền tố QA theo định dạng `QA` và chữ số được dành riêng cho dữ liệu thử; CSV thông thường không bao gồm QA. `/api/evaluation/export?qa=1` chỉ xuất QA. Không dùng QA làm dữ liệu sinh viên thật.
 
+Để xuất CSV với tiêu đề cột giống Google Sheet, quản trị viên được phép dùng `/api/evaluation/export?format=sheet`; thêm `&qa=1` chỉ khi xuất dữ liệu thử. Xuất CSV vẫn yêu cầu quyền quản trị như trước.
+
 CSV được kiểm tra quyền trên máy chủ bằng danh tính đăng nhập ChatGPT và email trong biến runtime bí mật `ADMIN_EMAIL`. Không đặt email hoặc khóa trong mã phía trình duyệt. Mã truy cập được băm trong cơ sở dữ liệu và không xuất ra CSV. Phân quyền và header nhận dạng của môi trường xuất bản cần được kiểm tra trên môi trường thật trước khi thu dữ liệu.
 
 Chạy `npm test` để kiểm tra công cụ cũ và các hàm chính sách. Với D1 cục bộ đã chạy migration, `node tests/evaluation-integration.mjs` kiểm tra hai lượt QA, điểm, feedback và phân quyền xuất; dùng cơ sở dữ liệu thử mới để tránh trùng mã. `npm run build` đồng bộ trang chủ từ `public/index.html` trước khi đóng gói.

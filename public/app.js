@@ -117,8 +117,173 @@
   const scenarioFeedback = document.getElementById("scenario-feedback");
   const progressFill = document.getElementById("scenario-progress-fill");
   const scenarioPercent = document.getElementById("scenario-percent");
+  const progressTrack = progressFill.parentElement;
+  const scenarioCard = document.querySelector(".scenario-card");
+  const scenarioNavigation = document.createElement("nav");
+  scenarioNavigation.className = "scenario-navigation";
+  scenarioNavigation.setAttribute("aria-label", "Đi tới tình huống");
+  const navigationHeading = document.createElement("div");
+  navigationHeading.className = "scenario-navigation-heading";
+  const navigationTitle = document.createElement("strong");
+  navigationTitle.textContent = "Đi tới tình huống";
+  const navigationStatus = document.createElement("span");
+  navigationStatus.setAttribute("aria-live", "polite");
+  const navigationList = document.createElement("ol");
+  navigationList.className = "scenario-jump-list";
+  const navigationLegend = document.createElement("div");
+  navigationLegend.className = "scenario-navigation-legend";
+  [
+    ["appropriate", "Appropriate"],
+    ["risky", "Risky"],
+    ["not-recommended", "Not Recommended"]
+  ].forEach(([kind, label]) => {
+    const item = document.createElement("span");
+    item.className = `scenario-navigation-key outcome-${kind}`;
+    const dot = document.createElement("i");
+    dot.setAttribute("aria-hidden", "true");
+    const text = document.createElement("span");
+    text.textContent = label;
+    item.append(dot, text);
+    navigationLegend.append(item);
+  });
+  const navigationNote = document.createElement("p");
+  navigationNote.className = "scenario-navigation-note";
+  navigationNote.textContent = "Màu thể hiện lựa chọn bạn đã chọn, không phải đáp án đúng/sai.";
+  navigationHeading.append(navigationTitle, navigationStatus);
+  scenarioNavigation.append(navigationHeading, navigationList, navigationLegend, navigationNote);
+  document.querySelector(".scenario-progress").after(scenarioNavigation);
+
+  const scenarioLivePanel = document.createElement("aside");
+  scenarioLivePanel.className = "scenario-live-panel";
+  scenarioLivePanel.setAttribute("aria-labelledby", "scenario-live-title");
+  const liveHeader = document.createElement("div");
+  liveHeader.className = "scenario-live-heading";
+  const liveEyebrow = document.createElement("span");
+  liveEyebrow.className = "scenario-live-eyebrow";
+  liveEyebrow.textContent = "PERSONA TẠM THỜI";
+  const liveStatus = document.createElement("span");
+  liveStatus.className = "scenario-live-status";
+  liveStatus.setAttribute("aria-live", "polite");
+  const liveTitle = document.createElement("h2");
+  liveTitle.id = "scenario-live-title";
+  liveTitle.textContent = "Persona trong lượt này";
+  liveHeader.append(liveEyebrow, liveStatus);
+  const liveCountsHeading = document.createElement("h3");
+  liveCountsHeading.className = "scenario-live-counts-title";
+  liveCountsHeading.textContent = "Lựa chọn hiện tại";
+  const liveCounts = document.createElement("dl");
+  liveCounts.className = "scenario-live-counts";
+  const liveCountValues = {};
+  [
+    ["appropriate", "Appropriate"],
+    ["risky", "Risky"],
+    ["not-recommended", "Not Recommended"]
+  ].forEach(([kind, label]) => {
+    const row = document.createElement("div");
+    row.className = `scenario-live-count outcome-${kind}`;
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const value = document.createElement("dd");
+    value.textContent = "0";
+    liveCountValues[kind] = value;
+    row.append(term, value);
+    liveCounts.append(row);
+  });
+  const livePrompt = document.createElement("p");
+  livePrompt.className = "scenario-live-prompt";
+  livePrompt.textContent = "Chọn ít nhất một phương án để hiện Persona tạm thời.";
+  const livePersona = document.createElement("div");
+  livePersona.className = "scenario-live-persona";
+  livePersona.hidden = true;
+  const liveIcon = document.createElement("span");
+  liveIcon.className = "scenario-live-icon";
+  liveIcon.setAttribute("aria-hidden", "true");
+  const livePersonaTitle = document.createElement("h3");
+  const livePersonaEnglish = document.createElement("span");
+  livePersonaEnglish.className = "scenario-live-english";
+  const liveSlogan = document.createElement("p");
+  liveSlogan.className = "scenario-live-slogan";
+  const liveDescription = document.createElement("p");
+  liveDescription.className = "scenario-live-description";
+  const liveRatio = document.createElement("p");
+  liveRatio.className = "scenario-live-ratio";
+  const liveAction = document.createElement("a");
+  liveAction.className = "scenario-live-action";
+  const liveCaveat = document.createElement("small");
+  liveCaveat.className = "scenario-live-caveat";
+  liveCaveat.textContent = "Tạm thời, dựa trên câu đã trả lời; tỷ lệ được quy đổi sang 10 câu và cập nhật khi bạn đổi hoặc thêm lựa chọn. Appropriate không xác nhận rằng AI được phép cho bài cụ thể này.";
+  livePersona.append(liveIcon, livePersonaTitle, livePersonaEnglish, liveSlogan, liveDescription, liveRatio, liveAction, liveCaveat);
+  scenarioLivePanel.append(liveHeader, liveTitle, liveCountsHeading, liveCounts, livePrompt, livePersona);
+  scenarioCard.after(scenarioLivePanel);
   let scenarioIndex = 0;
   const scenarioAnswers = Array(scenarios.length).fill(null);
+
+  function getScenarioCounts() {
+    const counts = { appropriate: 0, risky: 0, "not-recommended": 0 };
+    scenarioAnswers.forEach((answer, index) => {
+      if (answer !== null) counts[scenarios[index].choices[answer].kind] += 1;
+    });
+    return counts;
+  }
+
+  function renderLivePersona() {
+    const counts = getScenarioCounts();
+    const answeredCount = scenarioAnswers.filter((answer) => answer !== null).length;
+    liveStatus.textContent = answeredCount === 0 ? "Chưa bắt đầu" : `${answeredCount}/${scenarios.length} câu đã trả lời`;
+    Object.keys(liveCountValues).forEach((kind) => { liveCountValues[kind].textContent = String(counts[kind]); });
+    livePrompt.hidden = answeredCount > 0;
+    livePersona.hidden = answeredCount === 0;
+    if (answeredCount === 0) return;
+    const normalizedAppropriateCount = Math.floor((counts.appropriate / answeredCount) * scenarios.length);
+    const persona = window.AISmartCampusPersona?.getCard(normalizedAppropriateCount);
+    if (!persona) return;
+    livePersona.className = `scenario-live-persona persona-${persona.kind}`;
+    liveIcon.textContent = persona.icon;
+    livePersonaTitle.textContent = persona.title;
+    livePersonaEnglish.textContent = persona.english;
+    liveSlogan.textContent = persona.slogan;
+    liveDescription.textContent = persona.description;
+    liveRatio.textContent = `${counts.appropriate}/${answeredCount} lựa chọn Appropriate hiện tại`;
+    liveAction.href = persona.href;
+    liveAction.textContent = `${persona.action} ↗`;
+  }
+
+  function renderScenarioNavigation() {
+    const answeredCount = scenarioAnswers.filter((answer) => answer !== null).length;
+    const counts = getScenarioCounts();
+    navigationStatus.textContent = `Đã trả lời ${answeredCount}/${scenarios.length}`;
+    navigationList.replaceChildren();
+    scenarios.forEach((scenario, index) => {
+      const answer = scenarioAnswers[index];
+      const kind = answer === null ? null : scenario.choices[answer].kind;
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      const number = String(index + 1).padStart(2, "0");
+      button.type = "button";
+      button.className = "scenario-jump";
+      button.textContent = number;
+      button.setAttribute("aria-label", answer === null
+        ? `Tình huống ${number}, chưa trả lời`
+        : `Tình huống ${number}, đã trả lời: ${kindLabels[kind]}`);
+      if (index === scenarioIndex) {
+        button.classList.add("is-current");
+        button.setAttribute("aria-current", "step");
+      }
+      if (kind) {
+        button.dataset.kind = kind;
+        button.classList.add("is-answered");
+      }
+      button.addEventListener("click", () => {
+        scenarioIndex = index;
+        renderScenario();
+        scenarioTitle.setAttribute("tabindex", "-1");
+        scenarioTitle.focus();
+      });
+      item.append(button);
+      navigationList.append(item);
+    });
+    navigationStatus.setAttribute("aria-label", `Đã trả lời ${answeredCount} trên ${scenarios.length} tình huống: ${counts.appropriate} Appropriate, ${counts.risky} Risky, ${counts["not-recommended"]} Not Recommended`);
+  }
 
   function renderScenario() {
     const scenario = scenarios[scenarioIndex];
@@ -127,14 +292,24 @@
     scenarioCategory.textContent = scenario.category;
     scenarioTitle.textContent = scenario.title;
     scenarioPrompt.textContent = scenario.prompt;
-    const progress = Math.round(((scenarioIndex + 1) / scenarios.length) * 100);
+    const answeredCount = scenarioAnswers.filter((value) => value !== null).length;
+    const progress = Math.round((answeredCount / scenarios.length) * 100);
     progressFill.style.width = `${progress}%`;
+    progressTrack.setAttribute("role", "progressbar");
+    progressTrack.setAttribute("aria-label", "Số tình huống đã trả lời");
+    progressTrack.removeAttribute("aria-hidden");
+    progressTrack.setAttribute("aria-valuemin", "0");
+    progressTrack.setAttribute("aria-valuemax", String(scenarios.length));
+    progressTrack.setAttribute("aria-valuenow", String(answeredCount));
     scenarioPercent.textContent = `${progress}%`;
+    renderScenarioNavigation();
+    renderLivePersona();
     answerOptions.replaceChildren();
     scenario.choices.forEach((choice, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "answer-option";
+      button.dataset.kind = choice.kind;
       button.setAttribute("aria-pressed", answer === index ? "true" : "false");
       const letter = document.createElement("span");
       letter.className = "option-letter";
@@ -153,8 +328,13 @@
     });
     scenarioPrev.disabled = scenarioIndex === 0;
     scenarioNext.disabled = answer === null;
-    scenarioNext.innerHTML = scenarioIndex === scenarios.length - 1 ? "Xem tổng kết <span aria-hidden=\"true\">→</span>" : "Tiếp theo <span aria-hidden=\"true\">→</span>";
-    scenarioFeedback.textContent = answer === null ? "Chọn một phương án để tiếp tục." : "Bạn có thể đổi lựa chọn trước khi sang tình huống tiếp theo.";
+    const allAnswered = answeredCount === scenarios.length;
+    scenarioNext.innerHTML = scenarioIndex === scenarios.length - 1
+      ? `${allAnswered ? "Xem tổng kết" : "Tới câu còn thiếu"} <span aria-hidden=\"true\">→</span>`
+      : "Tiếp theo <span aria-hidden=\"true\">→</span>";
+    scenarioFeedback.textContent = answer === null
+      ? "Chọn một phương án để xem phản hồi; chưa có lựa chọn nào được chọn sẵn."
+      : `Bạn đã chọn ${kindLabels[scenario.choices[answer].kind]}. Đây là phân loại phản hồi, không phải điểm đúng/sai.`;
     if (answer === null) {
       scenarioResult.hidden = true;
       scenarioResult.replaceChildren();
@@ -214,7 +394,13 @@
       scenarioTitle.setAttribute("tabindex", "-1");
       scenarioTitle.focus();
     } else {
-      showScenarioSummary();
+      const firstUnanswered = scenarioAnswers.findIndex((answer) => answer === null);
+      if (firstUnanswered !== -1) {
+        scenarioIndex = firstUnanswered;
+        renderScenario();
+        scenarioTitle.setAttribute("tabindex", "-1");
+        scenarioTitle.focus();
+      } else showScenarioSummary();
     }
   });
 
@@ -228,8 +414,7 @@
       summary.setAttribute("aria-labelledby", "summary-title");
       card.after(summary);
     }
-    const counts = { appropriate: 0, risky: 0, "not-recommended": 0 };
-    scenarioAnswers.forEach((answer, index) => { if (answer !== null) counts[scenarios[index].choices[answer].kind] += 1; });
+    const counts = getScenarioCounts();
     summary.replaceChildren();
     const label = document.createElement("span");
     label.className = "scenario-category";
@@ -275,7 +460,7 @@
     reflectionText.textContent = persona?.description || "Xem lại phần giải thích của từng tình huống.";
     const reflectionScore = document.createElement("span");
     reflectionScore.className = "persona-score";
-    reflectionScore.textContent = `${counts.appropriate}/10 lựa chọn Appropriate trong lượt này`;
+    reflectionScore.textContent = `${counts.appropriate}/10 lựa chọn “Appropriate” trong lượt này`;
     const reflectionCaveat = document.createElement("small");
     reflectionCaveat.textContent = "Thẻ vui dựa trên lựa chọn bạn vừa thử; không đánh giá tâm lý, năng lực hay quyền dùng AI cho môn học.";
     const reflectionLink = document.createElement("a");
@@ -295,6 +480,8 @@
     review.addEventListener("click", () => {
       summary.hidden = true;
       card.hidden = false;
+      scenarioNavigation.hidden = false;
+      scenarioLivePanel.hidden = false;
       scenarioIndex = 0;
       renderScenario();
       document.getElementById("scenario-title").setAttribute("tabindex", "-1");
@@ -309,12 +496,16 @@
       scenarioIndex = 0;
       summary.hidden = true;
       card.hidden = false;
+      scenarioNavigation.hidden = false;
+      scenarioLivePanel.hidden = false;
       renderScenario();
       document.getElementById("scenario-title").setAttribute("tabindex", "-1");
       document.getElementById("scenario-title").focus();
     });
     controls.append(review, restart);
     summary.append(label, title, intro, countsRow, reflection, note, controls);
+    scenarioNavigation.hidden = true;
+    scenarioLivePanel.hidden = true;
     card.hidden = true;
     summary.hidden = false;
     title.focus();

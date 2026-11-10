@@ -5,6 +5,7 @@
 .stk-toolkit-title { margin: 0; color: #183a36; font-size: clamp(28px, 3vw, 38px); font-weight: 750; letter-spacing: -.045em; line-height: 1.16; }
 .stk-toolkit-intro { max-width: 790px; margin: 0; color: #4b625a; font-size: 15px; line-height: 1.7; }
 .stk-toolkit-disclosure-layout { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr); align-items: start; gap: 22px; min-width: 0; }
+.stk-toolkit-context { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .stk-toolkit-form { display: grid; gap: 18px; min-width: 0; }
 .stk-toolkit-choice-group, .stk-toolkit-prompt-card { min-width: 0; margin: 0; padding: 22px; border: 1px solid #d8e2d5; border-radius: 16px; background: #fffefa; box-shadow: 0 5px 18px rgba(22,54,58,.035); }
 .stk-toolkit-legend { display: flex; align-items: center; gap: 10px; max-width: 100%; padding-inline: 4px; color: #1c3c3e; font-size: 16px; font-weight: 760; line-height: 1.4; }
@@ -24,6 +25,8 @@
 .stk-toolkit-language { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #c8d7c0; border-radius: 999px; background: #fffefa; }
 .stk-toolkit-language-button { min-height: 38px; padding: 7px 12px; border: 0; border-radius: 999px; background: transparent; color: #40584c; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
 .stk-toolkit-language-button[aria-pressed="true"] { background: #16363a; color: #fff; }
+.stk-toolkit-confirm-label { display: flex; align-items: flex-start; gap: 10px; min-width: 0; padding: 12px 14px; border: 1px solid #d4dfca; border-radius: 10px; background: #fff; color: #344f46; cursor: pointer; font-size: 13px; line-height: 1.6; }
+.stk-toolkit-confirm-label input { flex: 0 0 auto; width: 18px; height: 18px; margin: 2px 0 0; accent-color: #557943; }
 .stk-toolkit-output, .stk-toolkit-prompt-text { min-width: 0; margin: 0; padding: 17px; border: 1px solid #d6e0d2; border-radius: 11px; background: #fff; color: #2c453b; font: inherit; font-size: 15px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
 .stk-toolkit-output { min-height: 180px; }
 .stk-toolkit-caveat { margin: 0; padding: 13px 15px; border-left: 3px solid #bb8d3e; border-radius: 0 9px 9px 0; background: #fff7e8; color: #604719; font-size: 13px; line-height: 1.65; }
@@ -37,11 +40,18 @@
 .stk-toolkit-button:disabled { cursor: not-allowed; opacity: .45; }
 .stk-toolkit-status { flex-basis: 100%; min-width: 0; color: #405b4d; font-size: 13px; line-height: 1.6; }
 .stk-toolkit-prompt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.stk-toolkit-prompt-controls { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 16px; align-items: end; }
+.stk-toolkit-search-label, .stk-toolkit-topic-label { margin: 0; }
 .stk-toolkit-prompt-card { display: flex; flex-direction: column; gap: 14px; }
 .stk-toolkit-card-title { margin: 0; color: #1a3b34; font-size: 18px; font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }
 .stk-toolkit-prompt-card .stk-toolkit-purpose { flex: 1; margin: 0; }
 .stk-toolkit-prompt-details { min-width: 0; padding: 12px 14px; border: 1px solid #e0e6d9; border-radius: 10px; background: #f6f9f2; }
 .stk-toolkit-prompt-details summary { color: #36583e; cursor: pointer; font-size: 14px; font-weight: 750; }
+.stk-toolkit-example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.stk-toolkit-example { min-width: 0; padding: 13px; border: 1px solid #e0e6d9; border-radius: 9px; background: #fff; }
+.stk-toolkit-example-strong { border-color: #b8d0a9; background: #f0f6e9; }
+.stk-toolkit-example strong { color: #294b34; font-size: 13px; }
+.stk-toolkit-example p { margin: 8px 0 0; color: #40584c; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
 .stk-toolkit-prompt-text { margin-top: 12px; padding: 13px; font-size: 14px; line-height: 1.7; }
 .stk-toolkit-accordion { min-width: 0; margin: 0; border: 1px solid #d9e2d4; border-radius: 15px; background: #fffefa; }
 .stk-toolkit-accordion summary { padding: 20px 22px; color: #1a3b34; cursor: pointer; font-size: 16px; font-weight: 750; line-height: 1.5; }
@@ -59,7 +69,7 @@
 @media (max-width: 700px) {
   .stk-toolkit { gap: 18px; margin-block: 30px 38px; padding-top: 22px; }
   .stk-toolkit-title { font-size: 28px; }
-  .stk-toolkit-options, .stk-toolkit-prompt-grid { grid-template-columns: minmax(0, 1fr); }
+  .stk-toolkit-options, .stk-toolkit-prompt-grid, .stk-toolkit-context, .stk-toolkit-prompt-controls, .stk-toolkit-example-grid { grid-template-columns: minmax(0, 1fr); }
   .stk-toolkit-choice-group, .stk-toolkit-prompt-card { padding: 17px; }
   .stk-toolkit-preview { padding: 18px; }
   .stk-toolkit-text-input { font-size: 16px; }

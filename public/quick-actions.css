@@ -1,0 +1,121 @@
+.asc-quick-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+}
+.asc-quick-trigger,
+.asc-tour-trigger {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid var(--line, #daddde);
+  border-radius: 12px;
+  background: var(--white, #fff);
+  color: var(--ink, #131214);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.asc-quick-trigger { background: var(--primary-soft, #f1edff); border-color: var(--primary-soft, #f1edff); color: var(--primary-dark, #4b33b7); }
+.asc-quick-trigger > span:first-child { font-size: 19px; line-height: .8; }
+.asc-quick-trigger kbd { padding: 2px 5px; border: 1px solid currentColor; border-radius: 5px; font: 500 9px/1.3 ui-monospace, monospace; opacity: .72; }
+.asc-tour-trigger:hover, .asc-quick-trigger:hover { border-color: var(--primary, #5b3ee0); transform: translateY(-1px); }
+.asc-quick-toolbar :focus-visible,
+.asc-dialog-overlay :focus-visible { outline: 3px solid var(--primary, #5b3ee0); outline-offset: 3px; }
+
+.asc-dialog-overlay[hidden] { display: none !important; }
+.asc-dialog-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  overflow-y: auto;
+  padding: min(14vh, 112px) 18px 28px;
+  background: rgba(15, 23, 42, .48);
+  backdrop-filter: blur(5px);
+}
+.asc-command-panel,
+.asc-tour-panel {
+  width: min(100%, 610px);
+  overflow: hidden;
+  border: 1px solid var(--line, #daddde);
+  border-radius: 22px;
+  background: var(--white, #fff);
+  color: var(--ink, #131214);
+  box-shadow: 0 28px 90px rgba(15, 23, 42, .22);
+  animation: asc-dialog-in .16s ease-out both;
+}
+@keyframes asc-dialog-in { from { opacity: 0; transform: translateY(-7px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.asc-dialog-head,
+.asc-tour-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 16px; }
+.asc-dialog-title-wrap { min-width: 0; }
+.asc-dialog-eyebrow { display: block; margin-bottom: 6px; color: var(--primary-dark, #4b33b7); font-size: 10px; font-weight: 800; letter-spacing: .11em; }
+.asc-dialog-title-wrap h2 { margin: 0; color: var(--ink, #131214); font-size: 22px; font-weight: 750; letter-spacing: -.025em; line-height: 1.25; }
+.asc-icon-close { display: inline-grid; width: 36px; height: 36px; flex: 0 0 auto; place-items: center; border: 1px solid var(--line, #daddde); border-radius: 10px; background: var(--white, #fff); color: var(--muted, #646168); cursor: pointer; font-size: 0; }
+.asc-icon-close::before { content: "×"; font-size: 23px; font-weight: 400; line-height: 1; }
+.asc-search-wrap { display: flex; align-items: center; gap: 11px; margin: 0 24px 14px; padding: 0 14px; border: 1px solid var(--line, #daddde); border-radius: 12px; background: var(--paper, #fff); }
+.asc-search-icon { color: var(--primary-dark, #4b33b7); font-size: 22px; }
+.asc-command-input { width: 100%; min-height: 50px; border: 0; outline: 0; background: transparent; color: var(--ink, #131214); font: inherit; font-size: 14px; }
+.asc-command-input::placeholder { color: var(--muted, #646168); opacity: .8; }
+.asc-command-results { display: grid; max-height: min(52vh, 390px); gap: 5px; overflow-y: auto; margin: 0; padding: 2px 12px 12px; list-style: none; }
+.asc-command-item { min-width: 0; }
+.asc-command-option { display: flex; min-width: 0; align-items: center; gap: 12px; padding: 11px 12px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: var(--ink, #131214); cursor: pointer; text-align: left; }
+.asc-command-option.is-active, .asc-command-option:hover { border-color: var(--primary-soft, #f1edff); background: var(--primary-soft, #f1edff); }
+.asc-command-option-icon { display: grid; width: 36px; height: 36px; flex: 0 0 auto; place-items: center; border-radius: 11px; background: var(--white, #fff); color: var(--primary-dark, #4b33b7); font-size: 19px; }
+.asc-command-option-copy { display: grid; min-width: 0; flex: 1; gap: 3px; }
+.asc-command-option-copy strong { overflow: hidden; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.asc-command-option-copy small { overflow: hidden; color: var(--muted, #646168); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.asc-command-enter { flex: 0 0 auto; color: var(--muted, #646168); font: 10px ui-monospace, monospace; }
+.asc-command-empty { margin: 0; padding: 26px 12px; color: var(--muted, #646168); font-size: 13px; text-align: center; }
+.asc-visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+.asc-dialog-hint { padding: 12px 24px; border-top: 1px solid var(--line, #daddde); color: var(--muted, #646168); font-size: 10px; }
+
+.asc-tour-panel { width: min(100%, 560px); }
+.asc-tour-head { padding: 24px 26px 14px; }
+.asc-tour-progress-wrap { display: flex; align-items: center; gap: 12px; padding: 0 26px 20px; }
+.asc-tour-progress { height: 6px; flex: 1; overflow: hidden; border-radius: 999px; background: var(--primary-soft, #f1edff); }
+.asc-tour-progress-fill { display: block; height: 100%; border-radius: inherit; background: var(--primary, #5b3ee0); transition: width .18s ease; }
+.asc-tour-progress-text { flex: 0 0 auto; color: var(--muted, #646168); font-size: 11px; font-weight: 650; }
+.asc-tour-step { min-height: 190px; padding: 28px 28px 32px; border-block: 1px solid var(--line, #daddde); background: var(--paper, #fff); }
+.asc-tour-step-number { display: inline-grid; width: 42px; height: 42px; place-items: center; border-radius: 13px; background: var(--primary-soft, #f1edff); color: var(--primary-dark, #4b33b7); font: 750 15px ui-monospace, monospace; }
+.asc-tour-step h3 { margin: 16px 0 8px; color: var(--ink, #131214); font-size: 19px; font-weight: 750; letter-spacing: -.02em; }
+.asc-tour-step p { max-width: 470px; margin: 0; color: var(--muted, #646168); font-size: 14px; line-height: 1.7; }
+.asc-tour-controls { display: flex; align-items: center; gap: 9px; padding: 18px 24px 22px; }
+.asc-tour-controls button { min-height: 42px; padding: 9px 14px; border: 1px solid var(--line, #daddde); border-radius: 11px; background: var(--white, #fff); color: var(--ink, #131214); cursor: pointer; font: inherit; font-size: 12px; font-weight: 650; }
+.asc-tour-controls .asc-tour-primary { margin-left: auto; border-color: var(--primary, #5b3ee0); background: var(--primary, #5b3ee0); color: #fff; }
+.asc-tour-controls .asc-tour-primary:hover { background: var(--primary-dark, #4b33b7); }
+.asc-tour-controls .asc-tour-quiet { margin-right: auto; border-color: transparent; color: var(--muted, #646168); }
+.asc-tour-controls button:disabled { cursor: default; opacity: .45; }
+
+html.dark .asc-quick-trigger, .dark .asc-quick-trigger { border-color: #3730a3; background: #1e1b4b; color: #c7d2fe; }
+html.dark .asc-tour-trigger, .dark .asc-tour-trigger { border-color: #334155; background: #111827; color: #e2e8f0; }
+html.dark .asc-command-panel, html.dark .asc-tour-panel, .dark .asc-command-panel, .dark .asc-tour-panel { --ink: #f8fafc; --muted: #a8b3c5; --white: #111827; --paper: #0b1220; --line: #273449; --primary-soft: #1e1b4b; --primary-dark: #c7d2fe; }
+html.dark .asc-dialog-overlay, .dark .asc-dialog-overlay { background: rgba(2, 6, 23, .72); }
+html.dark .asc-command-option-icon, .dark .asc-command-option-icon { background: #0b1220; }
+
+@media (max-width: 760px) {
+  .asc-quick-toolbar { gap: 5px; }
+  .asc-quick-trigger, .asc-tour-trigger { min-height: 38px; padding: 6px 8px; font-size: 11px; }
+  .asc-quick-trigger kbd { display: none; }
+  .asc-dialog-overlay { place-items: start center; padding: 9vh 12px 18px; }
+  .asc-dialog-head, .asc-tour-head { padding: 18px 17px 13px; }
+  .asc-search-wrap { margin-inline: 16px; }
+  .asc-command-results { max-height: 58vh; padding-inline: 8px; }
+  .asc-dialog-hint { padding-inline: 17px; }
+  .asc-tour-progress-wrap { padding-inline: 18px; }
+  .asc-tour-step { min-height: 205px; padding: 23px 19px; }
+  .asc-tour-controls { gap: 5px; padding: 14px 13px 17px; }
+  .asc-tour-controls button { padding-inline: 10px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .asc-command-panel, .asc-tour-panel { animation: none; }
+  .asc-tour-progress-fill, .asc-quick-trigger, .asc-tour-trigger { transition: none; }
+}

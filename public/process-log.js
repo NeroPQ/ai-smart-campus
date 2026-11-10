@@ -8,7 +8,12 @@
   }
   if (!root || !root.document) return;
   root.AISmartCampusProcessLog = api;
-  const start = () => api.mount(root.document, root.navigator, () => root.localStorage, root);
+  const start = () => {
+    api.mount(root.document, root.navigator, () => root.localStorage, root);
+    if (root.AISmartCampusToolkit && typeof root.AISmartCampusToolkit.attachProcessLog === "function") {
+      root.AISmartCampusToolkit.attachProcessLog(api);
+    }
+  };
   if (root.document.readyState === "loading") root.document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })(typeof window !== "undefined" ? window : globalThis, function () {
@@ -23,6 +28,12 @@
     { key: "corrections", label: "Bước 3 · AI trả về điều gì sai hoặc thiếu mà tôi đã tự sửa hoặc bác bỏ?" },
     { key: "evidenceLink", label: "Bước 4 · Link Google Docs có Version History hoặc Git Commit của tôi" }
   ];
+  let activeJournal = null;
+
+  function offerDraft(entry) {
+    if (!activeJournal || typeof activeJournal.offerDraft !== "function") return false;
+    return activeJournal.offerDraft(entry);
+  }
 
   function normalizeCourseName(value) {
     if (typeof value !== "string") return "";
@@ -287,6 +298,40 @@
     courseControls.append(createLabel, addButton, selectorLabel);
     app.append(courseControls, status);
 
+    const draftPanel = makeElement(doc, "section", "apl-draft-panel");
+    draftPanel.hidden = true;
+    draftPanel.setAttribute("role", "group");
+    draftPanel.setAttribute("aria-labelledby", "apl-draft-title");
+    const draftTitle = makeElement(doc, "h3", "apl-course-title", "Rà lại trước khi thêm vào nhật ký");
+    draftTitle.id = "apl-draft-title";
+    draftTitle.tabIndex = -1;
+    draftPanel.append(draftTitle, makeElement(doc, "p", "apl-draft-note", "Bản nháp chưa được lưu. Chọn một môn học đã có, xem lại nội dung rồi nhấn nút xác nhận. Công cụ không tự tạo môn học và không xác minh nội dung bạn nhập."));
+    const draftCourseLabel = makeElement(doc, "label", "apl-label", "Chọn môn học sẽ nhận ghi chú");
+    const draftCourseSelector = doc.createElement("select");
+    draftCourseSelector.className = "apl-input apl-select";
+    draftCourseSelector.setAttribute("aria-label", "Môn học sẽ nhận ghi chú");
+    draftCourseLabel.append(draftCourseSelector);
+    draftPanel.append(draftCourseLabel);
+    const draftTextLabel = makeElement(doc, "label", "apl-label", "Xem và chỉnh nội dung trước khi lưu");
+    const draftText = doc.createElement("textarea");
+    draftText.className = "apl-textarea apl-draft-text";
+    draftText.rows = 8;
+    draftTextLabel.append(draftText);
+    draftPanel.append(draftTextLabel);
+    const draftPreviewLabel = makeElement(doc, "strong", "apl-draft-preview-label", "Phần sẽ được thêm vào mục “Prompt chính”");
+    const draftPreview = makeElement(doc, "pre", "apl-draft-preview", "Chọn môn học để xem nội dung hiện có và phần sẽ được nối thêm.");
+    draftPreview.setAttribute("aria-live", "polite");
+    draftPanel.append(draftPreviewLabel, draftPreview);
+    const draftStatus = makeElement(doc, "p", "apl-status apl-draft-status", "");
+    draftStatus.setAttribute("role", "status");
+    draftStatus.setAttribute("aria-live", "polite");
+    const draftActions = makeElement(doc, "div", "apl-actions");
+    const saveDraftButton = makeButton(doc, "Xác nhận và lưu vào môn đã chọn", "apl-button apl-button-primary");
+    const cancelDraftButton = makeButton(doc, "Hủy bản nháp", "apl-button apl-button-secondary");
+    draftActions.append(saveDraftButton, cancelDraftButton);
+    draftPanel.append(draftStatus, draftActions);
+    app.append(draftPanel);
+
     const corruptRecovery = makeElement(doc, "div", "apl-recovery");
     const recoveryButton = makeButton(doc, "Cho phép lưu nhật ký hiện tại thay cho dữ liệu lỗi", "apl-button apl-button-secondary");
     const recoveryPrompt = makeElement(doc, "div", "apl-confirm-panel");
@@ -305,6 +350,12 @@
 
     const editor = makeElement(doc, "div", "apl-editor");
     app.append(editor);
+    const markdownPreviewDetails = doc.createElement("details");
+    markdownPreviewDetails.className = "apl-markdown-preview-details";
+    const markdownPreviewSummary = makeElement(doc, "summary", "", "Xem trước Markdown của môn đang chọn");
+    const markdownPreview = makeElement(doc, "pre", "apl-markdown-preview", "Chọn môn học để xem trước nội dung.");
+    markdownPreviewDetails.append(markdownPreviewSummary, markdownPreview);
+    app.append(markdownPreviewDetails);
     const actions = makeElement(doc, "div", "apl-actions");
     const downloadButton = makeButton(doc, "Xuất phụ lục Markdown", "apl-button apl-button-primary");
     const jsonButton = makeButton(doc, "Xuất JSON môn đang chọn", "apl-button apl-button-secondary");
@@ -335,6 +386,7 @@
 
     let currentName = "";
     let pendingDeleteName = "";
+    let pendingDraft = null;
 
     function currentCourse() {
       return data.courses.find((course) => course.name === currentName) || null;
@@ -382,14 +434,63 @@
       });
       if (!data.courses.some((course) => course.name === currentName)) currentName = "";
       selector.value = currentName;
+      renderDraftCourseOptions();
       downloadButton.disabled = !currentName;
       jsonButton.disabled = !currentName;
       printButton.disabled = !currentName;
       removeButton.disabled = !currentName;
     }
 
+    function renderDraftCourseOptions() {
+      if (!draftCourseSelector) return;
+      const selected = draftCourseSelector.value;
+      const placeholder = makeElement(doc, "option", "", "Chọn môn học đã lưu");
+      placeholder.value = "";
+      draftCourseSelector.replaceChildren(placeholder);
+      data.courses.forEach((course) => {
+        const option = makeElement(doc, "option", "", course.name);
+        option.value = course.name;
+        draftCourseSelector.append(option);
+      });
+      draftCourseSelector.value = data.courses.some((course) => course.name === selected) ? selected : "";
+      saveDraftButton.disabled = !storageWritable || !data.courses.length;
+      updateDraftPreview();
+    }
+
+    function selectedDraftCourse() {
+      return data.courses.find((course) => course.name === draftCourseSelector.value) || null;
+    }
+
+    function formatDraftBlock(entry, value) {
+      const heading = entry.kind === "disclosure"
+        ? "Bản khai báo AI do sinh viên rà lại"
+        : "Prompt tham khảo đã chọn (chưa xác nhận đã dùng)";
+      const disclaimer = entry.kind === "disclosure"
+        ? "Bản khai báo do sinh viên rà lại và lưu; nhật ký không xác minh cách dùng AI."
+        : "Mẫu học tập do sinh viên chọn; việc lưu không xác nhận prompt đã được dùng với AI.";
+      return `### ${heading}\n\n${value.trim()}\n\n> ${disclaimer}`;
+    }
+
+    function updateDraftPreview() {
+      const course = selectedDraftCourse();
+      const value = draftText.value.trim();
+      if (!course) {
+        draftPreview.textContent = data.courses.length
+          ? "Chọn môn học đã lưu để xem trước phần được nối thêm."
+          : "Chưa có môn học. Hủy bước này, tạo môn học trong nhật ký rồi thử lại.";
+        saveDraftButton.disabled = true;
+        return;
+      }
+      const addition = pendingDraft && value ? formatDraftBlock(pendingDraft, value) : "";
+      draftPreview.textContent = [course.mainPrompts.trim(), addition].filter(Boolean).join("\n\n---\n\n") || "Mục Prompt chính hiện chưa có ghi chú.";
+      saveDraftButton.disabled = !storageWritable || !value;
+    }
+
     function buildPrintAppendix(course) {
       printAppendix.replaceChildren();
+      markdownPreview.textContent = course
+        ? buildMarkdownExport(course)
+        : "Chọn môn học để xem trước nội dung.";
       if (!course) return;
       printAppendix.append(
         makeElement(doc, "p", "apl-print-kicker", "AI SMART CAMPUS · PHỤ LỤC"),
@@ -483,6 +584,50 @@
       createInput.value = "";
       renderEditor();
       saveData();
+    });
+
+    draftCourseSelector.addEventListener("change", updateDraftPreview);
+    draftText.addEventListener("input", updateDraftPreview);
+    cancelDraftButton.addEventListener("click", () => {
+      draftPanel.hidden = true;
+      pendingDraft = null;
+      draftText.value = "";
+      draftStatus.textContent = "Đã hủy; nội dung chưa được lưu.";
+      draftCourseSelector.value = "";
+      updateDraftPreview();
+    });
+    saveDraftButton.addEventListener("click", () => {
+      const course = selectedDraftCourse();
+      const value = draftText.value.trim();
+      if (!pendingDraft || !course || !value) {
+        draftStatus.textContent = course ? "Nhập hoặc rà lại nội dung trước khi lưu." : "Chọn môn học đã lưu trước khi lưu.";
+        draftCourseSelector.focus();
+        return;
+      }
+      if (!storageWritable || !storage) {
+        draftStatus.textContent = storageProblem || "Không thể lưu trên thiết bị này.";
+        return;
+      }
+      const oldMainPrompts = course.mainPrompts;
+      const oldUpdatedAt = course.updatedAt;
+      const addition = formatDraftBlock(pendingDraft, value);
+      course.mainPrompts = oldMainPrompts.trim() ? `${oldMainPrompts}\n\n---\n\n${addition}` : addition;
+      course.updatedAt = nowIso();
+      if (!saveData()) {
+        course.mainPrompts = oldMainPrompts;
+        course.updatedAt = oldUpdatedAt;
+        draftStatus.textContent = storageProblem || "Không lưu được. Nội dung vẫn ở trong bước rà lại và chưa được thêm vào nhật ký.";
+        updateDraftPreview();
+        return;
+      }
+      const savedTitle = pendingDraft.title;
+      currentName = course.name;
+      pendingDraft = null;
+      draftPanel.hidden = true;
+      draftText.value = "";
+      draftCourseSelector.value = "";
+      renderEditor();
+      announce(`Đã thêm “${savedTitle}” vào nhật ký môn ${course.name}.`);
     });
 
     selector.addEventListener("change", updateSelectedCourse);
@@ -644,6 +789,29 @@
     if (storageProblem) announce(storageProblem);
     renderCourseOptions();
     renderEditor();
+    activeJournal = {
+      offerDraft(entry) {
+        if (!entry || !["disclosure", "prompt"].includes(entry.kind) || typeof entry.body !== "string") return false;
+        const body = entry.body.trim().slice(0, 12000);
+        const title = typeof entry.title === "string" ? entry.title.trim().slice(0, 160) : "Bản nháp";
+        if (!body || !title) return false;
+        if (pendingDraft) {
+          draftPanel.hidden = false;
+          draftStatus.textContent = "Bạn đang có bản nháp chưa lưu. Hãy lưu hoặc hủy bản nháp này trước khi thêm nội dung khác.";
+          return "pending";
+        }
+        pendingDraft = { kind: entry.kind, title, body };
+        draftText.value = body;
+        draftCourseSelector.value = "";
+        draftPanel.hidden = false;
+        draftStatus.textContent = storageWritable
+          ? "Chưa lưu. Hãy chọn môn học, rà lại phần xem trước và xác nhận."
+          : `${storageProblem || "Bộ nhớ trên thiết bị không khả dụng."} Bản nháp chưa được lưu.`;
+        updateDraftPreview();
+        draftCourseSelector.focus();
+        return true;
+      }
+    };
     return true;
   }
 
@@ -659,6 +827,7 @@
     parseStoredData,
     escapeMarkdownCell,
     buildMarkdownExport,
+    offerDraft,
     mount
   };
 });

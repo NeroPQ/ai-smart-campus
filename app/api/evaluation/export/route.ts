@@ -9,10 +9,15 @@ export async function GET(request: Request) {
   const configured = (env as unknown as { ADMIN_EMAIL?: string }).ADMIN_EMAIL;
   if (!user || !isAuthorizedAdmin(user.email, configured)) return new Response('Không có quyền xuất dữ liệu.', { status: 403, headers: { 'Cache-Control': 'no-store' } });
   if (!env.DB) return new Response('Lưu trữ chưa sẵn sàng.', { status: 503 });
-  const qa = new URL(request.url).searchParams.get('qa') === '1';
+  const params = new URL(request.url).searchParams;
+  const qa = params.get('qa') === '1';
+  const sheetFormat = params.get('format') === 'sheet';
   const results = await env.DB.prepare('SELECT participant_id, pre_score, post_score, feedback, created_at, updated_at FROM evaluation_attempts WHERE is_qa = ? ORDER BY created_at LIMIT 5001').bind(qa ? 1 : 0).all<ExportRow>();
   if (results.results.length > 5000) return new Response('Dữ liệu vượt giới hạn xuất; cần phân trang.', { status: 413 });
-  const rows = [['Participant ID','Pre-test','Post-test','Improvement','Rating','Feedback','Created UTC','Updated UTC'].map(csvCell).join(',')];
+  const headers = sheetFormat
+    ? ['Participant ID','Pre-test /5','Post-test /5','Thay đổi điểm','Hữu ích /5','Góp ý','Tạo lúc (UTC)','Cập nhật lúc (UTC)']
+    : ['Participant ID','Pre-test','Post-test','Improvement','Rating','Feedback','Created UTC','Updated UTC'];
+  const rows = [headers.map(csvCell).join(',')];
   for (const row of results.results) {
     let feedback: { rating?: number; comment?: string } = {};
     try { feedback = row.feedback ? JSON.parse(row.feedback) : {}; } catch { /* leave malformed feedback blank */ }

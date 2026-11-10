@@ -60,6 +60,12 @@ export default function Evaluation() {
   const [copyState, setCopyState] = useState('');
 
   useEffect(() => {
+    const root = document.documentElement;
+    try { root.classList.toggle('dark', localStorage.getItem('ai-smart-campus-color-scheme') === 'dark'); } catch { /* Use the light theme if storage is unavailable. */ }
+    return () => root.classList.remove('dark');
+  }, []);
+
+  useEffect(() => {
     // The QA query flag and saved sessions are browser-only state; hydrate them after mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setQaMode(new URLSearchParams(window.location.search).get('qa') === '1');
@@ -349,6 +355,25 @@ export default function Evaluation() {
                     );
                   })}
                 </div>
+                <section className="do-dont" aria-labelledby="do-dont-title">
+                  <h3 id="do-dont-title">Dùng AI có trách nhiệm: Nên &amp; Tránh</h3>
+                  <div className="do-dont-grid">
+                    <div><h4>✓ Nên làm</h4><ul>
+                      <li>Đọc quy định môn học và hỏi giảng viên khi chưa rõ.</li>
+                      <li>Tự suy nghĩ, tự viết và chịu trách nhiệm về bài làm.</li>
+                      <li>Đối chiếu thông tin với nguồn gốc đáng tin cậy.</li>
+                      <li>Khai báo trung thực phần AI hỗ trợ khi được yêu cầu.</li>
+                      <li>Bảo vệ dữ liệu cá nhân và tài liệu chưa được phép chia sẻ.</li>
+                    </ul></div>
+                    <div><h4>✕ Cần tránh</h4><ul>
+                      <li>Nộp nguyên câu trả lời AI như sản phẩm của mình.</li>
+                      <li>Mặc định AI được phép làm mọi bài được chấm điểm.</li>
+                      <li>Dùng trích dẫn chưa kiểm tra hoặc nguồn không tồn tại.</li>
+                      <li>Nhập thông tin riêng tư hoặc bí mật vào AI công cộng.</li>
+                      <li>Coi điểm nhận diện AI là bằng chứng kết luận tác giả.</li>
+                    </ul></div>
+                  </div>
+                </section>
                 <details className="guideline-details">
                   <summary>AI Guideline · gợi ý áp dụng</summary>
                   <ul>
@@ -388,11 +413,17 @@ export default function Evaluation() {
                   <div className="success-note" role="status"><span aria-hidden="true">✓</span><p>Đã gửi góp ý. Cảm ơn bạn đã tham gia!</p></div>
                 ) : (
                   <>
-                    <label className="field-label" htmlFor="rating">Mức độ hữu ích của AI Smart Campus <span>(bắt buộc)</span></label>
-                    <select id="rating" value={rating} onChange={(event) => setRating(event.target.value)}>
-                      <option value="">Chọn mức đánh giá từ 1 đến 5</option>
-                      {[1, 2, 3, 4, 5].map((value) => <option key={value} value={value}>{value} · {value <= 2 ? 'Chưa hữu ích' : value === 3 ? 'Bình thường' : value === 4 ? 'Hữu ích' : 'Rất hữu ích'}</option>)}
-                    </select>
+                    <fieldset className="rating-group">
+                      <legend className="field-label">Mức độ hữu ích của AI Smart Campus <span>(bắt buộc)</span></legend>
+                      <div className="rating-options">
+                        {[1, 2, 3, 4, 5].map((value) => (
+                          <label className={`rating-option${rating === String(value) ? ' is-selected' : ''}`} key={value}>
+                            <input type="radio" name="rating" value={value} checked={rating === String(value)} onChange={(event) => setRating(event.target.value)} />
+                            <span aria-hidden="true">★</span> {value}<span className="rating-sr"> sao · {value <= 2 ? 'Chưa hữu ích' : value === 3 ? 'Bình thường' : value === 4 ? 'Hữu ích' : 'Rất hữu ích'}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
                     <label className="field-label" htmlFor="comment">Góp ý thêm <span>(không bắt buộc)</span></label>
                     <textarea id="comment" maxLength={500} value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Điều gì hữu ích? Bạn muốn cải thiện điểm nào? Không nhập thông tin cá nhân." />
                     <div className="field-hint">{comment.length}/500 ký tự</div>

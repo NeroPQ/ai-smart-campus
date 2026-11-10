@@ -17,8 +17,14 @@
   const MAX_TEXT_LENGTH = 100000;
   const CLICHES = [
     "delve into", "testament", "tapestry", "crucial", "furthermore", "in conclusion",
-    "trong kỷ nguyên số hiện nay", "bức tranh toàn cảnh", "không thể phủ nhận rằng", "đóng vai trò then chốt"
+    "trong kỷ nguyên số hiện nay", "trong kỷ nguyên số hóa ngày nay", "bức tranh toàn cảnh",
+    "không thể phủ nhận rằng", "hơn thế nữa", "tóm lại", "đóng vai trò then chốt"
   ];
+  const VAGUE_CITATIONS = ["nhiều nghiên cứu chỉ ra rằng", "các chuyên gia cho rằng"];
+  const SAMPLE_TEXTS = {
+    signals: "Trong kỷ nguyên số hóa ngày nay, trí tuệ nhân tạo đóng vai trò then chốt trong giáo dục. Không thể phủ nhận rằng công nghệ này đang thay đổi mọi lĩnh vực. Nhiều nghiên cứu chỉ ra rằng AI giúp tất cả sinh viên học tốt hơn, nhưng đoạn mẫu này không cung cấp nghiên cứu, số liệu hay nguồn cụ thể để kiểm tra nhận định đó. Hơn thế nữa, việc ứng dụng AI mang lại nhiều lợi ích to lớn cho cộng đồng học thuật. Các chuyên gia cho rằng công cụ này chắc chắn sẽ tạo nên một tương lai tốt đẹp. Tóm lại, AI là một giải pháp quan trọng và cần được sử dụng hiệu quả trong mọi hoạt động học tập. Đây là văn bản ví dụ do dự án biên soạn để thử bộ dò cụm từ, không phải bài viết hay dữ liệu của sinh viên.",
+    natural: "Trong buổi ôn môn phương pháp nghiên cứu, tôi dùng chatbot để nhờ giải thích sự khác nhau giữa câu hỏi khảo sát và câu hỏi phỏng vấn. Phần giải thích đầu tiên nghe hợp lý nhưng chưa giúp tôi quyết định cách hỏi cho đề tài của nhóm. Tôi mở lại bản nháp câu hỏi, gạch chân hai câu đang hỏi cùng một ý rồi tự viết lại một câu để hỏi về trải nghiệm, câu còn lại để hỏi về lý do. Sau đó, tôi đọc câu hỏi cho một bạn cùng nhóm nghe và sửa từ “thường xuyên” thành “trong tháng vừa qua” vì mốc thời gian cụ thể dễ trả lời hơn. Đây chỉ là tình huống minh họa được viết riêng cho công cụ; người dùng nên thay bằng trải nghiệm và bằng chứng của chính mình."
+  };
   const PREAMBLES = [
     { source: "chắc chắn rồi[,!:\\s]+dưới đây là", label: "Chắc chắn rồi, dưới đây là" },
     { source: "certainly[,!:\\s]+here(?:'|’)s", label: "Certainly, here's" },
@@ -138,6 +144,7 @@
 
     const matches = [];
     for (const phrase of CLICHES) addPhraseMatches(text, phrase, "cliche", matches);
+    for (const phrase of VAGUE_CITATIONS) addPhraseMatches(text, phrase, "citation", matches);
     for (const preamble of PREAMBLES) addPhraseMatches(text, preamble.label, "preamble", matches, preamble.source);
 
     const formatting = /(?:\*{2,}|_{2,}|~{2,}|`{1,}|^[\t ]{0,3}#{1,}(?=[\t ]|$))/gmu;
@@ -166,7 +173,7 @@
       return low === excluded.length || excluded[low].start >= match.end;
     });
     visibleMatches.sort((a, b) => a.start - b.start || a.end - b.end || a.category.localeCompare(b.category));
-    const counts = { cliche: 0, formatting: 0, preamble: 0 };
+    const counts = { cliche: 0, citation: 0, formatting: 0, preamble: 0 };
     for (const match of visibleMatches) counts[match.category] += 1;
     return { ok: true, length: text.length, matches: visibleMatches, counts, writing, references: extractReferences(text) };
   }
@@ -289,19 +296,84 @@
     host.append(report);
   }
 
+  function countMarkedWords(text, matches) {
+    const ranges = matches.filter((match) => match.category === "cliche" || match.category === "citation")
+      .map(({ start, end }) => ({ start, end }))
+      .sort((left, right) => left.start - right.start || left.end - right.end);
+    const merged = [];
+    for (const range of ranges) {
+      const previous = merged[merged.length - 1];
+      if (previous && range.start <= previous.end) previous.end = Math.max(previous.end, range.end);
+      else merged.push(range);
+    }
+    const wordPattern = new RegExp("[\\p{L}\\p{N}][\\p{L}\\p{M}\\p{N}]*(?:['’][\\p{L}\\p{M}\\p{N}][\\p{L}\\p{M}\\p{N}]*)*", "gu");
+    let count = 0;
+    for (const range of merged) {
+      const segment = text.slice(range.start, range.end);
+      for (const _match of segment.matchAll(wordPattern)) count += 1;
+    }
+    return count;
+  }
+
+  function renderLiveStats(doc, host, metrics) {
+    const cards = element(doc, "div", "sc-live-stat-cards");
+    const burstiness = Number.isFinite(metrics.burstinessCvPercent) ? metrics.burstinessCvPercent.toLocaleString("vi-VN", { maximumFractionDigits: 1 }) : "0";
+    const entropy = Number.isFinite(metrics.lexicalEntropyBits) ? metrics.lexicalEntropyBits.toLocaleString("vi-VN", { maximumFractionDigits: 2 }) : "0";
+    [
+      ["Độ biến thiên độ dài câu (Burstiness)", burstiness + "%", "Hệ số biến thiên = độ lệch chuẩn số từ mỗi câu ÷ độ dài câu trung bình × 100."],
+      ["Entropy từ vựng", entropy + " bits/từ", "Tính từ tần suất các từ sau khi chuẩn hóa chữ hoa/thường; không phải điểm chất lượng hay nguồn gốc."],
+      ["Từ / câu", metrics.wordCount.toLocaleString("vi-VN") + " / " + metrics.sentenceCount.toLocaleString("vi-VN"), metrics.uniqueWordCount.toLocaleString("vi-VN") + " từ khác nhau trong phần văn bản được phân tích."]
+    ].forEach(([label, value, explanation]) => {
+      const card = element(doc, "article", "sc-live-stat-card");
+      card.append(element(doc, "span", "sc-live-stat-label", label), element(doc, "strong", "sc-live-stat-value", value), element(doc, "span", "sc-live-stat-explanation", explanation));
+      cards.append(card);
+    });
+    host.append(cards);
+
+    if (!metrics.sentenceWordCounts.length) {
+      host.append(element(doc, "p", "sc-empty-state", "Chưa có câu để hiển thị biểu đồ."));
+      return;
+    }
+    const chartSection = element(doc, "div", "sc-sentence-chart");
+    chartSection.append(element(doc, "h3", "sc-chart-title", "Số từ theo câu"), element(doc, "p", "sc-help-text", "Thanh dài hơn biểu thị câu có nhiều từ hơn; đây chỉ là phân bố độ dài."));
+    const chart = element(doc, "ol", "sc-sentence-bars");
+    chart.setAttribute("aria-label", "Biểu đồ độ dài từng câu, tính bằng số từ");
+    const maximum = metrics.sentenceWordCounts.reduce((largest, count) => Math.max(largest, count), 1);
+    const visibleCounts = metrics.sentenceWordCounts.slice(0, 40);
+    visibleCounts.forEach((count, index) => {
+      const row = element(doc, "li", "sc-sentence-bar-row");
+      row.append(element(doc, "span", "sc-sentence-label", "Câu " + (index + 1)));
+      const track = element(doc, "span", "sc-sentence-track");
+      track.setAttribute("aria-hidden", "true");
+      const bar = element(doc, "span", "sc-sentence-bar");
+      bar.setAttribute("style", "width: " + Math.max(3, (count / maximum) * 100) + "%");
+      track.append(bar);
+      row.append(track, element(doc, "span", "sc-sentence-count", count + " từ"));
+      chart.append(row);
+    });
+    chartSection.append(chart);
+    if (metrics.sentenceWordCounts.length > visibleCounts.length) {
+      chartSection.append(element(doc, "p", "sc-help-text", "Hiển thị 40 câu đầu trong tổng số " + metrics.sentenceWordCounts.length.toLocaleString("vi-VN") + " câu."));
+    }
+    host.append(chartSection);
+  }
+
   function renderResults(doc, resultHost, text, result) {
     resultHost.replaceChildren();
     const summary = element(doc, "div", "sc-summary");
     summary.setAttribute("aria-label", "Số dấu hiệu tìm thấy theo nhóm");
+    const signalWords = countMarkedWords(text, result.matches);
+    const density = result.writing.metrics.wordCount ? (signalWords / result.writing.metrics.wordCount) * 100 : 0;
     [
-      ["cliche", "Cụm từ cần xem lại"],
-      ["formatting", "Dấu Markdown"],
-      ["preamble", "Câu mở đầu kiểu trợ lý"]
-    ].forEach(([key, label]) => {
+      ["cliche", "Cụm diễn đạt khuôn mẫu"],
+      ["citation", "Nhận định gán nguồn mơ hồ"],
+      ["density", "Mật độ cụm được đánh dấu (%)", density.toLocaleString("vi-VN", { maximumFractionDigits: 1 })]
+    ].forEach(([key, label, value]) => {
       const item = element(doc, "div", "sc-count-card");
-      item.append(element(doc, "strong", "sc-count", String(result.counts[key])), element(doc, "span", "sc-count-label", label));
+      item.append(element(doc, "strong", "sc-count", value === undefined ? String(result.counts[key]) : value), element(doc, "span", "sc-count-label", label));
       summary.append(item);
     });
+    summary.append(element(doc, "p", "sc-density-note", "Mật độ là tỷ lệ số từ nằm trong cụm khuôn mẫu hoặc nhận định gán nguồn mơ hồ được đánh dấu trên tổng số từ phân tích; đây không phải xác suất AI."));
     resultHost.append(summary);
 
     const overview = element(doc, "div", "sc-analysis-overview");
@@ -313,7 +385,7 @@
     const previewTitle = element(doc, "h2", "sc-section-title", "Văn bản đã quét");
     previewTitle.id = "sc-preview-title";
     previewSection.setAttribute("aria-labelledby", previewTitle.id);
-    previewSection.append(previewTitle, element(doc, "p", "sc-help-text", "Vàng: cụm từ / định dạng. Tím: mẫu diễn đạt bổ sung. Xem giải thích phía dưới; màu sắc không kết luận bài do AI viết."));
+    previewSection.append(previewTitle, element(doc, "p", "sc-help-text", "Vàng cam: cụm diễn đạt khuôn mẫu. Đỏ: nhận định gán nguồn còn mơ hồ. Tím: mẫu diễn đạt bổ sung. Xem các gợi ý bên dưới; màu sắc không kết luận tác giả hoặc nguồn gốc bài."));
     const preview = element(doc, "div", "sc-preview");
     preview.setAttribute("role", "region");
     preview.setAttribute("aria-label", "Bản xem trước với các cụm được đánh dấu");
@@ -347,7 +419,7 @@
 
     const privacy = element(doc, "aside", "sc-privacy");
     privacy.setAttribute("role", "note");
-    privacy.append(element(doc, "strong", "", "Riêng tư trong trình duyệt."), doc.createTextNode(" Nội dung bài chỉ được xử lý trên thiết bị này; công cụ không gửi hay lưu bài. Quét quy tắc dùng được ngay; mô hình thử nghiệm cần tải riêng ở bên dưới. Cả hai đều có thể bỏ sót hoặc nhận nhầm, không cho biết % bài do AI viết và không tự xác minh nguồn."));
+    privacy.append(element(doc, "strong", "", "Riêng tư trong trình duyệt."), doc.createTextNode(" Nội dung bài chỉ được xử lý trên thiết bị này; công cụ không gửi hay lưu bài. Quét quy tắc dùng được ngay; mô hình thử nghiệm chỉ tải khi bạn chủ động yêu cầu ở bên dưới. Tất cả kết quả chỉ là tín hiệu để tự rà soát, có thể bỏ sót hoặc nhận nhầm; không phải bằng chứng đạo văn, bằng chứng dùng AI hay xác suất AI."));
     section.append(privacy);
 
     const method = element(doc, "details", "sc-method");
@@ -375,6 +447,25 @@
     const help = element(doc, "p", "sc-sr-only", `Tối đa ${MAX_TEXT_LENGTH.toLocaleString("vi-VN")} ký tự.`);
     help.id = "sc-input-help";
     section.append(help);
+
+    const sampleControls = element(doc, "div", "sc-samples");
+    sampleControls.append(element(doc, "strong", "sc-samples-title", "Thử nhanh với văn bản mẫu"));
+    const sampleButtons = element(doc, "div", "sc-sample-buttons");
+    const signalSample = button(doc, "🧪 Thử mẫu nhiều dấu hiệu AI", "sc-button sc-button-secondary");
+    const naturalSample = button(doc, "✅ Thử mẫu bài viết tự nhiên", "sc-button sc-button-secondary");
+    sampleButtons.append(signalSample, naturalSample);
+    sampleControls.append(sampleButtons, element(doc, "p", "sc-help-text", "Hai đoạn là ví dụ do dự án biên soạn, không phải bài hoặc dữ liệu sinh viên. Mẫu chỉ nạp khi ô văn bản đang trống; hãy tự xóa nội dung nếu muốn thay bằng mẫu."));
+    section.append(sampleControls);
+
+    const liveStats = element(doc, "section", "sc-live-stats");
+    liveStats.setAttribute("aria-labelledby", "sc-live-stats-title");
+    const liveStatsTitle = element(doc, "h2", "sc-section-title", "Thống kê văn bản tức thì");
+    liveStatsTitle.id = "sc-live-stats-title";
+    liveStats.append(liveStatsTitle, element(doc, "p", "sc-help-text", "Các số dưới đây chỉ mô tả độ dài câu và phân bố từ trong văn bản. Chúng không ước tính ai là tác giả, không phải xác suất AI và không cần tải mô hình."));
+    const liveStatsBody = element(doc, "div", "sc-live-stats-body");
+    liveStatsBody.append(element(doc, "p", "sc-empty-state", "Nhập văn bản để xem các thống kê mô tả."));
+    liveStats.append(liveStatsBody);
+    section.append(liveStats);
 
     const controls = element(doc, "div", "sc-controls");
     const scan = button(doc, "Quét độ an toàn", "sc-button sc-button-primary");
@@ -405,14 +496,41 @@
 
     const updateCount = () => { length.textContent = `${textarea.value.length.toLocaleString("vi-VN")} / ${MAX_TEXT_LENGTH.toLocaleString("vi-VN")} ký tự`; };
     let hasResults = false;
-    textarea.addEventListener("input", () => {
+    const updateLiveStats = () => {
+      liveStatsBody.replaceChildren();
+      if (!textarea.value.trim()) {
+        liveStatsBody.append(element(doc, "p", "sc-empty-state", "Nhập văn bản để xem các thống kê mô tả."));
+        return;
+      }
+      try {
+        renderLiveStats(doc, liveStatsBody, writingSignals.describe(textarea.value));
+      } catch (_) {
+        liveStatsBody.append(element(doc, "p", "sc-analysis-note", "Không thể tính thống kê cho nội dung hiện tại. Hãy rút ngắn văn bản rồi thử lại."));
+      }
+    };
+    const handleInput = () => {
       updateCount();
+      updateLiveStats();
       if (hasResults) {
         resultHost.replaceChildren(element(doc, "p", "sc-stale-state", "Văn bản đã thay đổi. Hãy quét lại để cập nhật kết quả."));
         hasResults = false;
       }
       status.textContent = textarea.value ? "Nội dung chỉ ở trên thiết bị này. Bấm quét khi bạn sẵn sàng." : "Dán văn bản vào ô phía trên rồi bắt đầu quét.";
-    });
+    };
+    textarea.addEventListener("input", handleInput);
+    const loadSample = (sampleKey, label) => {
+      if (textarea.value.length) {
+        status.textContent = "Ô văn bản đang có nội dung. Nội dung hiện tại chưa bị thay đổi; hãy xóa bằng nút Xóa văn bản rồi chọn mẫu.";
+        textarea.focus();
+        return;
+      }
+      textarea.value = SAMPLE_TEXTS[sampleKey];
+      handleInput();
+      status.textContent = `${label} đã được nạp. Bấm «Quét độ an toàn» nếu muốn xem phần tô dấu.`;
+      textarea.focus();
+    };
+    signalSample.addEventListener("click", () => loadSample("signals", "Văn bản mẫu nhiều cụm cần rà soát"));
+    naturalSample.addEventListener("click", () => loadSample("natural", "Văn bản mẫu tự nhiên"));
     scan.addEventListener("click", () => {
       const text = textarea.value;
       if (text.length > MAX_TEXT_LENGTH) {
@@ -437,12 +555,13 @@
     clear.addEventListener("click", () => {
       textarea.value = "";
       updateCount();
+      updateLiveStats();
       resultHost.replaceChildren(element(doc, "p", "sc-empty-state", "Kết quả sẽ hiện ở đây sau khi quét."));
       status.textContent = "Đã xóa văn bản và kết quả khỏi trang.";
       hasResults = false;
       textarea.focus();
     });
-    return { textarea, scan, clear, status, resultHost };
+    return { textarea, scan, clear, status, resultHost, sampleButtons: [signalSample, naturalSample], liveStatsBody };
   }
 
   function mount(doc) {

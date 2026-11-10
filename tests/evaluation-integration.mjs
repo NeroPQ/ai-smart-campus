@@ -30,5 +30,10 @@ const spoofedExport=await fetch(base+'/api/evaluation/export?qa=1',{headers:{'oa
 const auth=await fetch(base+'/signin-with-chatgpt?return_to=%2Fevaluate',{redirect:'manual'});const cookie=auth.headers.get('set-cookie')?.split(';')[0];assert.ok(cookie,'local mock sign-in must supply a cookie');
 const exportResult=await fetch(base+'/api/evaluation/export?qa=1',{headers:{cookie}});assert.equal(exportResult.status,200,await exportResult.clone().text());
 const csv=await exportResult.text();assert.match(csv,/QA001.*2,4,2/);assert.match(csv,/QA002.*4,5,1/);assert.doesNotMatch(csv,new RegExp(sessions[0].token));
+const sheetExport=await fetch(base+'/api/evaluation/export?qa=1&format=sheet',{headers:{cookie}});
+assert.equal(sheetExport.status,200);
+const sheetCsv=await sheetExport.text();
+assert.match(sheetCsv,/"Participant ID","Pre-test \/5","Post-test \/5","Thay đổi điểm","Hữu ích \/5","Góp ý","Tạo lúc \(UTC\)","Cập nhật lúc \(UTC\)"/);
+assert.match(sheetCsv,/QA001.*2,4,2/);assert.doesNotMatch(sheetCsv,new RegExp(sessions[0].token));
 const live=await fetch(base+'/api/evaluation/export',{headers:{cookie}});assert.doesNotMatch(await live.text(),/QA001|QA002/);
 console.log('PASS local QA001/QA002 flow, score pairing, QA isolation and administrator-only export');

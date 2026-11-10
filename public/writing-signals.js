@@ -588,5 +588,53 @@
     return { findings: findings.slice(0, MAX_FINDINGS), metrics, sufficientText, excludedRanges };
   }
 
-  return { analyze, MAX_TEXT_LENGTH, MAX_FINDINGS, MAX_RANGES_PER_FINDING };
+  // These are descriptive text statistics only. They are not authorship scores.
+  function describe(input) {
+    const source = typeof input === "string" ? input : "";
+    if (source.length > MAX_TEXT_LENGTH) throw new RangeError(`Text exceeds ${MAX_TEXT_LENGTH} UTF-16 code units.`);
+
+    const excludedRanges = collectExclusions(source);
+    const comparable = buildComparable(maskExcluded(source, excludedRanges));
+    const paragraphs = paragraphSegments(comparable.text);
+    const sentenceWordCounts = [];
+    const frequencies = new Map();
+    let wordCount = 0;
+
+    for (const paragraph of paragraphs) {
+      for (const sentence of sentenceSegments(comparable.text, paragraph.start, paragraph.end)) {
+        sentenceWordCounts.push(sentence.wordCount);
+      }
+    }
+    const tokens = wordTokens(comparable.text, 0, comparable.text.length);
+    for (const token of tokens) {
+      const normalized = token.text.toLowerCase();
+      frequencies.set(normalized, (frequencies.get(normalized) || 0) + 1);
+      wordCount += 1;
+    }
+
+    const sentenceCount = sentenceWordCounts.length;
+    const mean = sentenceCount ? sentenceWordCounts.reduce((total, count) => total + count, 0) / sentenceCount : 0;
+    const variance = sentenceCount
+      ? sentenceWordCounts.reduce((total, count) => total + Math.pow(count - mean, 2), 0) / sentenceCount
+      : 0;
+    const burstinessCvPercent = mean ? (Math.sqrt(variance) / mean) * 100 : 0;
+    let lexicalEntropyBits = 0;
+    if (wordCount) {
+      for (const count of frequencies.values()) {
+        const probability = count / wordCount;
+        lexicalEntropyBits -= probability * Math.log2(probability);
+      }
+    }
+
+    return {
+      wordCount,
+      sentenceCount,
+      sentenceWordCounts,
+      uniqueWordCount: frequencies.size,
+      burstinessCvPercent,
+      lexicalEntropyBits
+    };
+  }
+
+  return { analyze, describe, MAX_TEXT_LENGTH, MAX_FINDINGS, MAX_RANGES_PER_FINDING };
 });

@@ -94,6 +94,14 @@ assert.equal(scanner.MAX_TEXT_LENGTH, 100000);
 }
 
 {
+  const text = "Trong kỷ nguyên số hóa ngày nay. Nhiều nghiên cứu chỉ ra rằng.";
+  const result = scanner.analyzeText(text);
+  assert.equal(result.counts.cliche, 1);
+  assert.equal(result.counts.citation, 1);
+  assert.deepEqual(result.matches.map((match) => match.category), ["cliche", "citation"]);
+}
+
+{
   const text = "Chắc chắn rồi, dưới đây là kết quả. Certainly, here's the answer.\n### Tiêu đề\n**đậm** and `code`.";
   const result = scanner.analyzeText(text);
   assert.equal(result.counts.preamble, 2);
@@ -188,6 +196,55 @@ assert.equal(scanner.MAX_TEXT_LENGTH, 100000);
   click(clear);
   assert.equal(textarea.value, "");
   assert.match(results.textContent, /Kết quả sẽ hiện ở đây/);
+}
+
+{
+  const doc = new FakeDocument();
+  const host = doc.createElement("div");
+  host.id = "toolkit-scanner";
+  doc.body.append(host);
+  scanner.mount(doc);
+  const textarea = walk(host, (node) => node.tagName === "TEXTAREA")[0];
+  const signalSample = walk(host, (node) => node.tagName === "BUTTON" && node.textContent === "🧪 Thử mẫu nhiều dấu hiệu AI")[0];
+  const naturalSample = walk(host, (node) => node.tagName === "BUTTON" && node.textContent === "✅ Thử mẫu bài viết tự nhiên")[0];
+  const clear = walk(host, (node) => node.tagName === "BUTTON" && node.textContent === "Xóa văn bản")[0];
+  const scan = walk(host, (node) => node.tagName === "BUTTON" && node.textContent === "Quét độ an toàn")[0];
+  const liveStats = walk(host, (node) => node.className === "sc-live-stats-body")[0];
+
+  click(signalSample);
+  const firstSample = textarea.value;
+  assert.match(firstSample, /không phải bài viết hay dữ liệu của sinh viên/);
+  assert.match(host.textContent, /Độ biến thiên độ dài câu \(Burstiness\)/);
+  assert.match(host.textContent, /Entropy từ vựng/);
+  assert.ok(walk(liveStats, (node) => node.className === "sc-sentence-bars").length > 0);
+
+  click(naturalSample);
+  assert.equal(textarea.value, firstSample, "a sample selection never replaces existing user or sample text");
+  assert.match(walk(host, (node) => node.className === "sc-status")[0].textContent, /chưa bị thay đổi/);
+
+  click(clear);
+  click(naturalSample);
+  assert.notEqual(textarea.value, firstSample);
+  assert.match(textarea.value, /tình huống minh họa được viết riêng cho công cụ/);
+  click(scan);
+  const results = walk(host, (node) => node.className === "sc-results")[0];
+  assert.equal(walk(results, (node) => node.className === "sc-count-card").length, 3);
+  assert.match(results.textContent, /Mật độ cụm được đánh dấu/);
+  assert.match(results.textContent, /không phải xác suất AI/);
+  assert.equal(walk(results, (node) => node.tagName === "MARK" && /citation/.test(node.getAttribute("data-categories") || "")).length, 0, "natural sample does not contain vague-citation highlights");
+
+  click(clear);
+  textarea.value = "Trong kỷ nguyên số hóa ngày nay. Nhiều nghiên cứu chỉ ra rằng.";
+  textarea.dispatch("input");
+  click(scan);
+  const signalResults = walk(host, (node) => node.className === "sc-results")[0];
+  const signalCards = walk(signalResults, (node) => node.className === "sc-count-card");
+  assert.equal(signalCards[0].textContent, "1Cụm diễn đạt khuôn mẫu");
+  assert.equal(signalCards[1].textContent, "1Nhận định gán nguồn mơ hồ");
+  assert.equal(signalCards[2].children[0].textContent, "100", "all words in this short example are within one of the two flagged phrases");
+  const highlights = walk(signalResults, (node) => node.tagName === "MARK");
+  assert.ok(highlights.some((node) => /cliche/.test(node.getAttribute("data-categories") || "")));
+  assert.ok(highlights.some((node) => /citation/.test(node.getAttribute("data-categories") || "")));
 }
 
 {

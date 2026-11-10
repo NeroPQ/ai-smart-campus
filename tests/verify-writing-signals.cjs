@@ -39,6 +39,28 @@ assert.equal(writing.MAX_TEXT_LENGTH, 100000);
 }
 
 {
+  const metrics = writing.describe('Same word. same WORD word! "quoted words are excluded."');
+  assert.deepEqual(metrics.sentenceWordCounts, [2, 3]);
+  assert.equal(metrics.wordCount, 5);
+  assert.equal(metrics.sentenceCount, 2);
+  assert.equal(metrics.uniqueWordCount, 2);
+  assert.ok(Math.abs(metrics.lexicalEntropyBits - 0.9709505944546686) < 1e-12, "entropy reflects the 2-to-3 frequency distribution of two case-folded words");
+  assert.equal(metrics.burstinessCvPercent, 20, "coefficient of variation reports sentence-length spread descriptively");
+  assert.deepEqual(writing.describe(""), {
+    wordCount: 0,
+    sentenceCount: 0,
+    sentenceWordCounts: [],
+    uniqueWordCount: 0,
+    burstinessCvPercent: 0,
+    lexicalEntropyBits: 0
+  });
+}
+
+{
+  assert.throws(() => writing.describe("x".repeat(writing.MAX_TEXT_LENGTH + 1)), RangeError);
+}
+
+{
   const text = "It is important to note that this short example contains only one sentence.";
   const result = writing.analyze(text);
   assertValidResult(text, result);

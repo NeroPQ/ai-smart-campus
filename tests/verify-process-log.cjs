@@ -316,9 +316,50 @@ getButton(deleteDoc.host, "Xóa môn học này").click();
 deletePanel.children[1].click();
 assert.equal(getById(deleteDoc.host, "apl-course-select").value, "", "confirmed deletion removes only the selected course");
 
+const draftRuntime = makeRuntime();
+const draftDoc = makeDocument(draftRuntime);
+const draftStorage = makeStorage();
+processLog.mount(draftDoc, null, draftStorage, draftRuntime);
+getById(draftDoc.host, "apl-course-name").value = "Môn tích hợp";
+getButton(draftDoc.host, "Thêm hoặc mở môn học").click();
+const existingNotes = getById(draftDoc.host, "apl-field-mainPrompts");
+existingNotes.value = "Ghi chú trước đó";
+existingNotes.handlers.input();
+const writesBeforeOffer = draftStorage.writes;
+assert.equal(processLog.offerDraft({ kind: "unknown", title: "Không hợp lệ", body: "x" }), false,
+  "only known draft kinds can be offered to the journal");
+assert.equal(processLog.offerDraft({ kind: "prompt", title: "Prompt đã chọn", body: "Giải thích [chủ đề] bằng ví dụ." }), true);
+const draftPanel = walk(draftDoc.host).find((node) => node.className === "apl-draft-panel");
+assert.equal(draftPanel.hidden, false, "offering a draft opens an explicit review step");
+assert.equal(draftStorage.writes, writesBeforeOffer, "offering a draft never saves it automatically");
+const draftTextArea = walk(draftPanel).find((node) => node.tagName === "TEXTAREA");
+draftTextArea.value = "Bản nháp đã tự sửa";
+assert.equal(processLog.offerDraft({ kind: "prompt", title: "Mẫu khác", body: "Không được ghi đè" }), "pending");
+assert.equal(draftTextArea.value, "Bản nháp đã tự sửa", "a second offer does not replace an unsaved draft");
+draftTextArea.value = "Giải thích [chủ đề] bằng ví dụ.";
+const draftCourseSelector = walk(draftPanel).find((node) => node.tagName === "SELECT");
+const confirmDraft = getButton(draftPanel, "Xác nhận và lưu vào môn đã chọn");
+assert.equal(confirmDraft.disabled, true, "save waits for explicit course selection");
+draftCourseSelector.value = "Môn tích hợp";
+draftCourseSelector.handlers.change();
+assert.match(walk(draftPanel).find((node) => node.className === "apl-draft-preview").textContent, /Ghi chú trước đó[\s\S]*Prompt tham khảo đã chọn/,
+  "review preview shows existing notes and the labeled appended example");
+assert.match(walk(draftPanel).find((node) => node.className === "apl-draft-preview").textContent, /chưa xác nhận đã dùng/);
+assert.equal(confirmDraft.disabled, false);
+confirmDraft.click();
+const savedDraftData = processLog.parseStoredData(draftStorage.getItem(processLog.STORAGE_KEY)).data;
+assert.equal(savedDraftData.courses.length, 1, "cross-save does not auto-create a course");
+assert.match(savedDraftData.courses[0].mainPrompts, /Ghi chú trước đó/);
+assert.match(savedDraftData.courses[0].mainPrompts, /Prompt tham khảo đã chọn/);
+assert.match(savedDraftData.courses[0].mainPrompts, /Giải thích \[chủ đề\] bằng ví dụ/);
+assert.equal(draftPanel.hidden, true, "successful confirmation closes the review step");
+assert.match(walk(draftDoc.host).find((node) => node.className === "apl-markdown-preview").textContent, /Prompt tham khảo đã chọn/,
+  "the Markdown preview updates to show the saved journal content");
+
 console.log("PASS Unicode-normalized, duplicate-safe course names and independent per-course drafts");
 console.log("PASS Markdown export escapes user markup, includes timestamps, and leaves empty fields empty");
 console.log("PASS malformed, unavailable, quota-failed, and stale-tab storage preserve drafts and enable export");
 console.log("PASS corrupt saved data is preserved until explicit inline overwrite confirmation");
 console.log("PASS explicit print scopes appendix-only CSS and clears on afterprint, unavailable print, or failure");
 console.log("PASS course deletion requires inline confirmation");
+console.log("PASS draft offers require course selection and explicit confirmation, preserve existing notes, and update Markdown preview");

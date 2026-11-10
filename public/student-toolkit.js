@@ -8,11 +8,20 @@
   }
   if (!root || !root.document) return;
   root.AISmartCampusToolkit = api;
-  const start = () => api.mount(root.document, root.navigator);
+  const start = () => api.mount(root.document, root.navigator, root.AISmartCampusProcessLog);
   if (root.document.readyState === "loading") root.document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 })(typeof window !== "undefined" ? window : globalThis, function () {
   "use strict";
+
+  let activeProcessLog = null;
+  const integrationRefreshers = [];
+
+  function attachProcessLog(processLog) {
+    activeProcessLog = processLog && typeof processLog.offerDraft === "function" ? processLog : null;
+    integrationRefreshers.forEach((refresh) => refresh());
+    return Boolean(activeProcessLog);
+  }
 
   const OPTIONS = {
     tools: ["ChatGPT (OpenAI)", "Google Gemini", "Claude (Anthropic)", "GitHub Copilot", "Canva AI", "Gamma AI", "Grammarly", "QuillBot"].map((name) => ({ vi: name, en: name })),
@@ -125,15 +134,25 @@
     if (!tools.length || !tasks.length) return "";
 
     const english = selected.language === "en";
+    const apaGuidance = selected.language === "apa";
+    const course = typeof selected.course === "string" ? selected.course.trim().slice(0, 120) : "";
+    const assignment = typeof selected.assignment === "string" ? selected.assignment.trim().slice(0, 160) : "";
     if (english) {
-      const lines = [`I used ${tools.join(", ")} to ${tasks.join(", ")} while working on this assignment.`];
+      const lines = [];
+      if (course) lines.push(`Course: ${course}.`);
+      if (assignment) lines.push(`Assignment: ${assignment}.`);
+      lines.push(`I used ${tools.join(", ")} to ${tasks.join(", ")} while working on this assignment.`);
       if (checks.length) lines.push(`I took these steps to check the work: ${checks.join(", ")}.`);
       lines.push("I take responsibility for the final work and its accuracy.");
       return lines.join(" ");
     }
-    const lines = [`Tôi đã sử dụng ${tools.join(", ")} để ${tasks.join(", ")} trong quá trình làm bài.`];
+    const lines = [];
+    if (course) lines.push(`Môn học: ${course}.`);
+    if (assignment) lines.push(`Bài tập: ${assignment}.`);
+    lines.push(`Tôi đã sử dụng ${tools.join(", ")} để ${tasks.join(", ")} trong quá trình làm bài.`);
     if (checks.length) lines.push(`Các bước tôi đã thực hiện để kiểm tra lại gồm: ${checks.join(", ")}.`);
     lines.push("Tôi chịu trách nhiệm về nội dung và độ chính xác của bài nộp cuối cùng.");
+    if (apaGuidance) lines.push("Hướng dẫn APA 7: Đây là lời khai báo, không phải trích dẫn hay mục tài liệu tham khảo. Kiểm tra hướng dẫn chính thức và quy định của môn học; công cụ không tự tạo thông tin nguồn.");
     return lines.join(" ");
   }
 
@@ -148,6 +167,33 @@
     const button = makeElement(doc, "button", className || "stk-toolkit-button", text);
     button.type = "button";
     return button;
+  }
+
+  function navigateToJournal(doc) {
+    if (!doc || typeof doc.getElementById !== "function") return;
+    const browser = doc.defaultView || null;
+    const focusJournal = () => {
+      const target = doc.getElementById("apl-draft-title") || doc.getElementById("toolkit-process-log");
+      if (target && typeof target.scrollIntoView === "function") target.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (target && typeof target.focus === "function") target.focus();
+    };
+    const scheduleFocus = () => {
+      if (browser && typeof browser.requestAnimationFrame === "function") browser.requestAnimationFrame(focusJournal);
+      else if (browser && typeof browser.setTimeout === "function") browser.setTimeout(focusJournal, 0);
+      else focusJournal();
+    };
+    const alreadyOnJournal = !browser || !browser.location || browser.location.hash === "#toolkit-process-log";
+    if (alreadyOnJournal) {
+      scheduleFocus();
+      return;
+    }
+    if (typeof browser.addEventListener === "function") {
+      browser.addEventListener("hashchange", scheduleFocus, { once: true });
+      browser.location.hash = "#toolkit-process-log";
+    } else {
+      browser.location.hash = "#toolkit-process-log";
+      scheduleFocus();
+    }
   }
 
   function makeSourceLink(doc, text, href) {
@@ -165,7 +211,7 @@
     heading.append(makeElement(doc, "span", "stk-toolkit-kicker", "CÔNG CỤ 01 · KHAI BÁO AI"));
     const title = makeElement(doc, "h1", "stk-toolkit-title", "Khai báo & Nhật ký minh bạch AI");
     title.id = "stk-disclosure-title";
-    heading.append(title, makeElement(doc, "p", "stk-toolkit-intro", "Ghi lại đúng công cụ, khâu hỗ trợ và bước bạn đã tự làm. Chọn mục nào đúng với bài này."));
+    heading.append(title, makeElement(doc, "p", "stk-toolkit-intro", "Chỉ chọn những gì bạn đã thực sự làm cho bài này. Bản khai báo là bản nháp để bạn rà lại trước khi sao chép hoặc lưu."));
     section.append(heading);
 
     const jump = makeElement(doc, "nav", "page-tool-links");
@@ -176,6 +222,42 @@
     section.append(jump);
 
     const form = makeElement(doc, "div", "stk-toolkit-form");
+    const contextGroup = makeElement(doc, "div", "stk-toolkit-context");
+    const courseLabel = makeElement(doc, "label", "stk-toolkit-field", "Môn học (không bắt buộc)");
+    const courseInput = doc.createElement("input");
+    courseInput.type = "text";
+    courseInput.maxLength = 120;
+    courseInput.autocomplete = "off";
+    courseInput.placeholder = "Ví dụ: Nhập môn khoa học dữ liệu";
+    courseInput.className = "stk-toolkit-text-input";
+    courseLabel.append(courseInput);
+    const assignmentLabel = makeElement(doc, "label", "stk-toolkit-field", "Tên bài tập (không bắt buộc)");
+    const assignmentInput = doc.createElement("input");
+    assignmentInput.type = "text";
+    assignmentInput.maxLength = 160;
+    assignmentInput.autocomplete = "off";
+    assignmentInput.placeholder = "Ví dụ: Báo cáo giữa kỳ";
+    assignmentInput.className = "stk-toolkit-text-input";
+    assignmentLabel.append(assignmentInput);
+    contextGroup.append(courseLabel, assignmentLabel);
+    form.append(contextGroup);
+    const presetLabel = makeElement(doc, "label", "stk-toolkit-field", "Gợi ý theo loại bài (không tự chọn thay bạn)");
+    const presetSelect = doc.createElement("select");
+    presetSelect.className = "stk-toolkit-text-input";
+    presetSelect.setAttribute("aria-label", "Gợi ý theo loại bài; không tự chọn mục khai báo");
+    [
+      ["", "Chọn loại bài để xem gợi ý"],
+      ["writing", "Bài viết / tiểu luận"],
+      ["programming", "Bài lập trình"]
+    ].forEach(([value, label]) => {
+      const option = makeElement(doc, "option", "", label);
+      option.value = value;
+      presetSelect.append(option);
+    });
+    presetLabel.append(presetSelect);
+    const presetNote = makeElement(doc, "p", "stk-toolkit-hint stk-toolkit-preset-note", "Gợi ý chỉ giúp bạn nhớ các mục có thể phù hợp. Mọi ô vẫn để trống; chỉ tự chọn việc bạn đã thực sự làm.");
+    presetNote.setAttribute("aria-live", "polite");
+    form.append(presetLabel, presetNote);
     const fields = {};
     [
       ["tools", "01", "Công cụ AI đã dùng", "Chọn công cụ đã dùng cho chính bài này."],
@@ -220,12 +302,13 @@
     const previewHeading = makeElement(doc, "div", "stk-toolkit-preview-heading");
     const languageGroup = makeElement(doc, "div", "stk-toolkit-language", "");
     languageGroup.setAttribute("role", "group");
-    languageGroup.setAttribute("aria-label", "Ngôn ngữ bản nháp");
+    languageGroup.setAttribute("aria-label", "Ngôn ngữ hoặc hướng dẫn bản nháp");
     let language = "vi";
     const languageButtons = {};
-    [["vi", "Tiếng Việt"], ["en", "English"]].forEach(([value, text]) => {
+    [["vi", "Tiếng Việt"], ["en", "English"], ["apa", "APA 7 · hướng dẫn"]].forEach(([value, text]) => {
       const button = makeButton(doc, text, "stk-toolkit-language-button");
       button.setAttribute("aria-pressed", value === language ? "true" : "false");
+      if (value === "apa") button.setAttribute("title", "Hướng dẫn khai báo theo APA 7; không tạo trích dẫn APA");
       languageButtons[value] = button;
       languageGroup.append(button);
     });
@@ -238,26 +321,30 @@
     preview.append(previewHeading, output);
     const caveat = makeElement(doc, "p", "stk-toolkit-caveat", "Khai báo minh bạch không biến một hành vi bị cấm thành hợp lệ. Hãy kiểm tra yêu cầu riêng của giảng viên. Bản nháp này không phải tài liệu tham khảo APA hoàn chỉnh.");
     preview.append(caveat);
-    const reference = makeElement(doc, "p", "stk-toolkit-reference", "Nếu môn học yêu cầu APA, xem hướng dẫn chính thức rồi chỉnh theo yêu cầu của môn.");
+    const reference = makeElement(doc, "p", "stk-toolkit-reference", "Công cụ không tự tạo trích dẫn APA vì mỗi lời khai cần phản ánh đúng cách bạn đã dùng AI và yêu cầu của môn học. Nếu môn yêu cầu APA, hãy kiểm tra hướng dẫn chính thức và bổ sung thông tin nguồn phù hợp.");
     reference.append(makeSourceLink(doc, "APA Style ↗", "https://apastyle.apa.org/blog/cite-generative-ai-references"));
     preview.append(reference);
     const actions = makeElement(doc, "div", "stk-toolkit-actions");
     const copy = makeButton(doc, "Sao chép bản khai báo", "stk-toolkit-button stk-toolkit-button-primary");
     copy.disabled = true;
+    const save = makeButton(doc, "Lưu bản nháp vào nhật ký…", "stk-toolkit-button stk-toolkit-button-secondary");
+    save.disabled = true;
     const reset = makeButton(doc, "Xóa lựa chọn", "stk-toolkit-button stk-toolkit-button-secondary");
     const status = makeElement(doc, "span", "stk-toolkit-status", "");
     status.setAttribute("role", "status");
-    actions.append(copy, reset, status);
+    actions.append(copy, save, reset, status);
     preview.append(actions);
     layout.append(form, preview);
     section.append(layout);
     host.replaceChildren(section);
 
     const readState = () => ({
-      tools: fields.tools.filter((input) => input.checked).map((input) => OPTIONS.tools[Number(input.value)][language]),
-      tasks: fields.tasks.filter((input) => input.checked).map((input) => OPTIONS.tasks[Number(input.value)][language]),
-      checks: fields.checks.filter((input) => input.checked).map((input) => OPTIONS.checks[Number(input.value)][language]),
+      tools: fields.tools.filter((input) => input.checked).map((input) => OPTIONS.tools[Number(input.value)][language === "en" ? "en" : "vi"]),
+      tasks: fields.tasks.filter((input) => input.checked).map((input) => OPTIONS.tasks[Number(input.value)][language === "en" ? "en" : "vi"]),
+      checks: fields.checks.filter((input) => input.checked).map((input) => OPTIONS.checks[Number(input.value)][language === "en" ? "en" : "vi"]),
       otherTool: otherInput.value,
+      course: courseInput.value,
+      assignment: assignmentInput.value,
       language
     });
     const update = () => {
@@ -267,31 +354,65 @@
       }));
       const value = buildDisclosure(readState());
       output.textContent = value || "Chọn ít nhất một công cụ và một khâu hỗ trợ để tạo bản nháp.";
-      output.lang = language;
+      output.lang = language === "en" ? "en" : "vi";
       copy.disabled = !value;
+      save.disabled = !value || !disclosureConfirmed.checked || !activeProcessLog;
       status.textContent = value && !fields.checks.some((input) => input.checked)
         ? "Chưa ghi bước kiểm tra; bản nháp sẽ không khẳng định bạn đã kiểm tra."
         : "";
     };
-    ["vi", "en"].forEach((value) => languageButtons[value].addEventListener("click", () => {
+    const disclosureConfirmedLabel = makeElement(doc, "label", "stk-toolkit-confirm-label");
+    const disclosureConfirmed = doc.createElement("input");
+    disclosureConfirmed.type = "checkbox";
+    disclosureConfirmed.id = "stk-disclosure-confirmed";
+    disclosureConfirmedLabel.append(disclosureConfirmed, makeElement(doc, "span", "", "Tôi xác nhận các lựa chọn trên phản ánh đúng cách tôi đã dùng AI cho bài này."));
+    preview.insertBefore(disclosureConfirmedLabel, actions);
+    disclosureConfirmed.addEventListener("change", update);
+    integrationRefreshers.push(update);
+    ["vi", "en", "apa"].forEach((value) => languageButtons[value].addEventListener("click", () => {
       language = value;
-      languageButtons.vi.setAttribute("aria-pressed", value === "vi" ? "true" : "false");
-      languageButtons.en.setAttribute("aria-pressed", value === "en" ? "true" : "false");
+      Object.entries(languageButtons).forEach(([key, button]) => button.setAttribute("aria-pressed", value === key ? "true" : "false"));
       update();
     }));
     form.addEventListener("change", update);
     otherInput.addEventListener("input", update);
+    courseInput.addEventListener("input", update);
+    assignmentInput.addEventListener("input", update);
+    presetSelect.addEventListener("change", () => {
+      const suggestions = {
+        writing: "Bài viết: hãy cân nhắc riêng từng ô về gợi ý ý tưởng, dàn ý, sửa ngữ pháp, đọc nguồn và tự chỉnh bản cuối. Chỉ chọn đúng việc đã làm.",
+        programming: "Lập trình: hãy cân nhắc riêng từng ô về giải thích mã, gợi ý debug và tự chạy kiểm thử. Chỉ chọn đúng việc đã làm."
+      };
+      presetNote.textContent = suggestions[presetSelect.value] || "Gợi ý chỉ giúp bạn nhớ các mục có thể phù hợp. Mọi ô vẫn để trống; chỉ tự chọn việc bạn đã thực sự làm.";
+    });
     copy.addEventListener("click", async () => {
       const value = buildDisclosure(readState());
       const success = await copyText(value, doc, navigatorObject);
       status.textContent = success ? "Đã sao chép." : "Không sao chép được. Hãy chọn văn bản trong ô và sao chép thủ công.";
     });
+    save.addEventListener("click", () => {
+      if (!activeProcessLog) {
+        status.textContent = "Nhật ký chưa sẵn sàng. Mở phần Nhật ký minh bạch AI rồi thử lại.";
+        return;
+      }
+      const offered = activeProcessLog.offerDraft({ kind: "disclosure", title: "Bản khai báo AI", body: buildDisclosure(readState()) });
+      if (offered) {
+        status.textContent = offered === "pending" ? "Bạn đang có bản nháp chưa lưu. Hãy xử lý bản nháp đó trước." : "Bản nháp chưa được lưu. Chọn môn học và xác nhận trong màn hình nhật ký.";
+        navigateToJournal(doc);
+      } else {
+        status.textContent = "Chưa mở được bước lưu. Hãy mở lại trang hoặc dùng nút sao chép bản nháp.";
+      }
+    });
     reset.addEventListener("click", () => {
       Object.values(fields).flat().forEach((input) => { input.checked = false; });
       otherInput.value = "";
+      courseInput.value = "";
+      assignmentInput.value = "";
+      presetSelect.value = "";
+      presetNote.textContent = "Gợi ý chỉ giúp bạn nhớ các mục có thể phù hợp. Mọi ô vẫn để trống; chỉ tự chọn việc bạn đã thực sự làm.";
+      disclosureConfirmed.checked = false;
       language = "vi";
-      languageButtons.vi.setAttribute("aria-pressed", "true");
-      languageButtons.en.setAttribute("aria-pressed", "false");
+      Object.entries(languageButtons).forEach(([key, button]) => button.setAttribute("aria-pressed", key === "vi" ? "true" : "false"));
       update();
       status.textContent = "Đã xóa lựa chọn.";
     });
@@ -327,49 +448,96 @@
     const filterStatus = makeElement(doc, "p", "stk-toolkit-hint", `Đang hiển thị ${PROMPTS.length} trên ${PROMPTS.length} mẫu.`);
     filterStatus.setAttribute("role", "status");
     filterStatus.setAttribute("aria-live", "polite");
-    section.append(filterControls, filterStatus);
+    const searchLabel = makeElement(doc, "label", "stk-toolkit-field stk-toolkit-search-label", "Tìm mẫu prompt");
+    const searchInput = doc.createElement("input");
+    searchInput.type = "search";
+    searchInput.className = "stk-toolkit-text-input";
+    searchInput.placeholder = "Tìm theo tình huống, từ khóa hoặc công cụ…";
+    searchInput.autocomplete = "off";
+    searchLabel.append(searchInput);
+    const topicLabel = makeElement(doc, "label", "stk-toolkit-field stk-toolkit-topic-label", "Chủ đề cần học (không bắt buộc)");
+    const topicInput = doc.createElement("input");
+    topicInput.type = "text";
+    topicInput.maxLength = 160;
+    topicInput.className = "stk-toolkit-text-input";
+    topicInput.placeholder = "Ví dụ: đạo đức khi dùng AI trong đại học";
+    topicInput.autocomplete = "off";
+    topicLabel.append(topicInput);
+    const searchRow = makeElement(doc, "div", "stk-toolkit-prompt-controls");
+    searchRow.append(searchLabel, topicLabel);
+    section.append(filterControls, searchRow, filterStatus);
 
     const grid = makeElement(doc, "div", "stk-toolkit-prompt-grid");
     const cards = [];
+    const promptSaveButtons = [];
     PROMPTS.forEach((prompt, index) => {
       const card = makeElement(doc, "article", "stk-toolkit-prompt-card");
       card.dataset.category = prompt.category;
+      card.dataset.promptIndex = String(index);
       const heading = makeElement(doc, "h3", "stk-toolkit-card-title", `${String(index + 1).padStart(2, "0")} · ${prompt.title}`);
       const categoryLabel = PROMPT_CATEGORIES.find((category) => category.key === prompt.category).label;
       card.append(makeElement(doc, "span", "stk-toolkit-kicker", categoryLabel), heading, makeElement(doc, "p", "stk-toolkit-purpose", prompt.purpose));
 
       const challenge = makeElement(doc, "details", "stk-toolkit-prompt-details");
-      challenge.append(makeElement(doc, "summary", "", "Thử nâng cấp: câu này còn thiếu gì?"));
-      challenge.append(makeElement(doc, "p", "stk-toolkit-purpose", `Câu ban đầu: “${prompt.challenge.weak}”`));
-      challenge.append(makeElement(doc, "p", "stk-toolkit-hint", "Thử tự thêm bối cảnh hoặc giới hạn trước khi mở ví dụ."));
-      const answer = makeElement(doc, "details", "stk-toolkit-prompt-details");
-      answer.append(makeElement(doc, "summary", "", "Xem một cách nâng cấp"));
-      answer.append(makeElement(doc, "p", "stk-toolkit-prompt-text", prompt.challenge.improved));
-      answer.append(makeElement(doc, "p", "stk-toolkit-hint", prompt.challenge.lesson));
-      challenge.append(answer);
 
+      const exampleGrid = makeElement(doc, "div", "stk-toolkit-example-grid");
+      const weakExample = makeElement(doc, "div", "stk-toolkit-example stk-toolkit-example-weak");
+      const weakText = makeElement(doc, "p", "", prompt.challenge.weak);
+      weakExample.append(makeElement(doc, "strong", "", "Câu ban đầu"), weakText);
+      const improvedExample = makeElement(doc, "div", "stk-toolkit-example stk-toolkit-example-strong");
+      const improvedText = makeElement(doc, "p", "", prompt.challenge.improved);
+      improvedExample.append(makeElement(doc, "strong", "", "Một cách cải thiện"), improvedText);
+      exampleGrid.append(weakExample, improvedExample);
       const text = makeElement(doc, "pre", "stk-toolkit-prompt-text", prompt.text);
       const sample = makeElement(doc, "details", "stk-toolkit-prompt-details");
       sample.append(makeElement(doc, "summary", "", "Xem mẫu prompt"), text);
+      challenge.replaceChildren(makeElement(doc, "summary", "", "So sánh câu hỏi ban đầu và cách cải thiện"), exampleGrid,
+        makeElement(doc, "p", "stk-toolkit-hint", prompt.challenge.lesson));
       card.append(challenge, sample);
       const actions = makeElement(doc, "div", "stk-toolkit-actions");
       const button = makeButton(doc, "Sao chép prompt", "stk-toolkit-button stk-toolkit-button-primary");
+      const saveButton = makeButton(doc, "Lưu mẫu vào nhật ký…", "stk-toolkit-button stk-toolkit-button-secondary");
+      saveButton.disabled = !activeProcessLog;
+      promptSaveButtons.push(saveButton);
       const status = makeElement(doc, "span", "stk-toolkit-status", "");
       status.setAttribute("role", "status");
       button.addEventListener("click", async () => {
-        const success = await copyText(prompt.text, doc, navigatorObject);
+        const success = await copyText(renderPromptText(prompt, topicInput.value), doc, navigatorObject);
         status.textContent = success ? "Đã sao chép." : "Không sao chép được. Hãy chọn văn bản trong prompt và sao chép thủ công.";
       });
-      actions.append(button, status);
+      saveButton.addEventListener("click", () => {
+        if (!activeProcessLog) {
+          status.textContent = "Nhật ký chưa sẵn sàng. Bạn vẫn có thể sao chép prompt.";
+          return;
+        }
+        const offered = activeProcessLog.offerDraft({
+          kind: "prompt",
+          title: `Mẫu prompt: ${prompt.title}`,
+          body: renderPromptText(prompt, topicInput.value)
+        });
+        status.textContent = offered
+          ? (offered === "pending" ? "Bạn đang có bản nháp chưa lưu. Hãy xử lý bản nháp đó trước." : "Mẫu chưa được lưu. Chọn môn học và xác nhận trong màn hình nhật ký.")
+          : "Chưa mở được bước lưu. Hãy dùng nút sao chép prompt.";
+        if (offered) navigateToJournal(doc);
+      });
+      actions.append(button, saveButton, status);
       card.append(actions);
       grid.append(card);
       cards.push(card);
+      card._topicNodes = { weakText, improvedText, sampleText: text };
+      card.dataset.search = promptSearchText(prompt, "");
     });
     section.append(grid);
+    integrationRefreshers.push(() => promptSaveButtons.forEach((button) => { button.disabled = !activeProcessLog; }));
 
-    const applyFilter = (selectedCategory) => {
+    let selectedCategory = "all";
+    const applyFilter = (category) => {
+      selectedCategory = category;
+      const query = searchInput.value.trim().toLocaleLowerCase();
       const visibleCount = cards.reduce((count, card) => {
-        const visible = selectedCategory === "all" || card.dataset.category === selectedCategory;
+        const matchesCategory = selectedCategory === "all" || card.dataset.category === selectedCategory;
+        const matchesSearch = !query || card.dataset.search.includes(query);
+        const visible = matchesCategory && matchesSearch;
         card.hidden = !visible;
         return count + (visible ? 1 : 0);
       }, 0);
@@ -380,10 +548,38 @@
           ? "stk-toolkit-button stk-toolkit-button-primary"
           : "stk-toolkit-button stk-toolkit-button-secondary";
       });
-      filterStatus.textContent = `Đang hiển thị ${visibleCount} trên ${cards.length} mẫu.`;
+      filterStatus.textContent = query
+        ? `Đang hiển thị ${visibleCount} trên ${cards.length} mẫu phù hợp với “${searchInput.value.trim()}”.`
+        : `Đang hiển thị ${visibleCount} trên ${cards.length} mẫu.`;
     };
     PROMPT_CATEGORIES.forEach(({ key }) => filterButtons[key].addEventListener("click", () => applyFilter(key)));
+    searchInput.addEventListener("input", () => applyFilter(selectedCategory));
+    topicInput.addEventListener("input", () => {
+      cards.forEach((card) => {
+        const prompt = PROMPTS[Number(card.dataset.promptIndex)];
+        const topic = topicInput.value.trim().slice(0, 160);
+        const replaceTopic = (text) => text.replace(/\[(?:topic|chủ đề|khái niệm)\]/gi, (match) => topic || match);
+        card._topicNodes.sampleText.textContent = renderPromptText(prompt, topic);
+        card._topicNodes.weakText.textContent = replaceTopic(prompt.challenge.weak);
+        card._topicNodes.improvedText.textContent = replaceTopic(prompt.challenge.improved);
+        card.dataset.search = promptSearchText(prompt, topic).toLocaleLowerCase();
+      });
+      applyFilter(selectedCategory);
+    });
+    applyFilter("all");
     host.replaceChildren(section);
+  }
+
+  function renderPromptText(prompt, topic) {
+    const value = typeof topic === "string" ? topic.trim().slice(0, 160) : "";
+    return prompt.text.replace(/\[(?:topic|chủ đề|khái niệm)\]/gi, (match) => value || match);
+  }
+
+  function promptSearchText(prompt, topic) {
+    const value = typeof topic === "string" ? topic.trim().slice(0, 160) : "";
+    const replaceTopic = (text) => text.replace(/\[(?:topic|chủ đề|khái niệm)\]/gi, (match) => value || match);
+    return [prompt.title, prompt.category, prompt.purpose, prompt.text, prompt.challenge.weak, prompt.challenge.improved, prompt.challenge.lesson]
+      .map(replaceTopic).join(" ").toLocaleLowerCase();
   }
 
   async function copyText(text, doc, navigatorObject) {
@@ -409,8 +605,9 @@
     return copied;
   }
 
-  function mount(doc, navigatorObject) {
+  function mount(doc, navigatorObject, processLog) {
     if (!doc || !doc.getElementById) return false;
+    if (processLog) attachProcessLog(processLog);
     const targets = [
       ["toolkit-disclosure", renderDisclosure],
       ["toolkit-prompts", renderPrompts]
@@ -426,5 +623,5 @@
     return mounted;
   }
 
-  return { OPTIONS, PROMPTS, PROMPT_CATEGORIES, initialDisclosureState, buildDisclosure, copyText, mount };
+  return { OPTIONS, PROMPTS, PROMPT_CATEGORIES, initialDisclosureState, buildDisclosure, renderPromptText, promptSearchText, copyText, attachProcessLog, mount };
 });

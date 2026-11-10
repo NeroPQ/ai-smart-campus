@@ -4,9 +4,13 @@ for (const score of [0, 4]) assert.equal(getCard(score).kind, 'sleepwalker');
 for (const score of [5, 7]) assert.equal(getCard(score).kind, 'sprinter');
 for (const score of [8, 10]) assert.equal(getCard(score).kind, 'architect');
 for (const invalid of [-1, 11, 5.5, NaN, '8', null]) assert.equal(getCard(invalid), null);
+assert.equal(getCard(8).title, 'Kiến Trúc Sư Tư Duy Độc Lập');
+assert.equal(getCard(5).title, 'Người Khai Phá Đang Hoàn Thiện');
+assert.equal(getCard(4).title, 'Người Phụ Thuộc Tốc Độ');
+assert.match(getCard(4).description, /không phải kết luận về con người bạn/);
 for (let score = 0; score <= 10; score++) {
   const card = getCard(score);
   assert.match(card.href, /^#/);
   assert.doesNotMatch(card.description, /vi phạm Điều|chắc chắn|tính cách/);
 }
-console.log('PASS Persona thresholds 4/5 and 7/8, invalid counts, and practice-only wording');
+console.log('PASS Persona thresholds 4/5 and 7/8, labels, non-diagnostic wording and invalid counts');
